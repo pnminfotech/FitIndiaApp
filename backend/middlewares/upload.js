@@ -13,28 +13,16 @@ const storage = multer.diskStorage({
 });
 
 // File filter
-// const fileFilter = (req, file, cb) => {
-//   const allowedExts = ['.jpg', '.jpeg', '.png', '.jfif', '.webp'];
-//   const ext = path.extname(file.originalname).toLowerCase();
-
-//   if (allowedExts.includes(ext)) {
-//     cb(null, true);
-//   } else {
-//     cb(new Error('Only image files with .jpg, .jpeg, .png, .jfif, .webp are allowed!'));
-//   }
-// };
-
 const fileFilter = (req, file, cb) => {
-  const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.jfif'];
+  const allowedExts = ['.jpg', '.jpeg', '.png', '.jfif', '.webp'];
   const ext = path.extname(file.originalname).toLowerCase();
-  allowed.includes(ext)
-    ? cb(null, true)
-    : cb(new Error('Only images are allowed!'));
+
+  if (allowedExts.includes(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files with .jpg, .jpeg, .png, .jfif, .webp are allowed!'));
+  }
 };
-
-
-
-
 
 
 const upload = multer({ storage, fileFilter });
