@@ -44,40 +44,7 @@ const VenueList = () => {
     });
   };
 
-  //Edit/Submit Update Venue List
-  // const submitUpdate = async (id) => {
-  //   const formData = new FormData();
-  //   formData.append("name", editVenues.name);
-  //   formData.append("city", editVenues.city);
-  //   formData.append("address", editVenues.address);
-  //   formData.append("sport", editVenues.sport);
-  //   formData.append("pricing", editVenues.pricing);
-
-  //   if (editVenues.image) {
-  //     formData.append("image", editVenues.image);
-  //   }
-
-  //   try {
-  //     const res = await fetch(
-  //       `http://localhost:8000/api/venues/${editVenues._id}`,
-  //       {
-  //         method: "PUT",
-  //         body: formData,
-  //       }
-  //     );
-
-  //     if (res.ok) {
-  //       alert("Venues Updated!");
-  //       setEditVenues(null);
-  //     } else {
-  //       alert("Update failed.");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Something went wrong");
-  //   }
-  // };
-
+  
   const submitUpdate = async () => {
     const fd = new FormData();
     Object.entries(editForm).forEach(([k, v]) => {
