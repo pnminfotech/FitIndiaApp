@@ -1,6 +1,6 @@
-import sharp from "sharp";
-import fs from "fs/promises"; // use promise version of fs
 import path from "path";
+import sharp from "sharp";
+import { promises as fs } from "fs";
 import VenueModel from "../models/VenueModel.js";
 
 // Post/ add New data
@@ -82,22 +82,42 @@ export const updateVenue = async (req, res) => {
       const output = path.join("uploads", newName);
 
       await sharp(input).jpeg({ quality: 80 }).toFile(output);
-      fs.unlinkSync(input);
+      try {
+        await fs.unlink(oldPath);
+      } catch (err) {
+        console.warn("Couldn't delete old image:", err.message);
+      }
+
       // delete old image
-      const old = await VenueModel.findById(req.params.id);
+      const old = await VenueModel.findById(req.params.id); // ✅ also important
       if (old?.image) {
         const oldPath = path.join("uploads", old.image);
-        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+        try {
+          await fs.unlink(oldPath);
+        } catch (err) {
+          console.warn("Old image not found or already deleted:", oldPath);
+        }
       }
+
       updated.image = newName;
     }
+
+    // console.log("Update ID:", req.params.id);
+    // console.log("Update data:", updated);
+
     const saved = await VenueModel.findByIdAndUpdate(req.params.id, updated, {
       new: true,
     });
+
+    if (!saved) {
+      return res.status(404).json({ error: "Venue not found" });
+    }
+
+    // ✅ Send success response
     res.status(200).json(saved);
   } catch (error) {
     console.log(error);
-    res.status(501).json({ error: "Failed to update venue " });
+    res.status(501).json({ error: "Failed to update venue" });
   }
 };
 

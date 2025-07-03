@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaUsers, FaCalendarCheck, FaRupeeSign, FaChalkboardTeacher } from 'react-icons/fa';
 import { MdOutlineSportsBasketball } from "react-icons/md";
 
 function Dashboard() {
+  const [venuesCount, setVenuesCount] = useState(0);
+
+  //Fetch Total Venues Count
+  useEffect(()=>{
+    const fetchVenues = async ()=>{
+      try {
+        const res = await fetch('http://localhost:8000/api/venues');
+        const data = await res.json();
+        setVenuesCount(data.length);
+      } catch (error) {
+        console.error("Failed to fetch venue count:", error);
+      }
+    };
+    fetchVenues();
+  },[])
   const cards = [
     {
       title: "Total Users",
@@ -17,7 +32,7 @@ function Dashboard() {
     {
       title: "Total Venues",
       icon: <MdOutlineSportsBasketball className="text-white" size={30} />,
-      value: 28
+      value: venuesCount
     },
     {
       title: "Total Bookings",

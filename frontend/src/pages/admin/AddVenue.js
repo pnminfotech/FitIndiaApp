@@ -22,8 +22,7 @@ function AddVenue() {
     formData.append("sports", venue.sports);
     formData.append("image", venue.image); // must match field used in multer
 
-    // method: 'POST',
-    // body: formData,
+
     try {
       const res = await fetch("http://localhost:8000/api/venues", {
         method: "POST",
@@ -43,17 +42,6 @@ function AddVenue() {
       } else {
         alert("Failed to add venue");
       }
-
-      // Reset form
-      setVenue({
-        name: "",
-        city: "",
-        address: "",
-        sports: "",
-        pricing: "",
-        imageUrl: "",
-        imageFile: null,
-      });
     } catch (err) {
       alert("Error occurred");
       console.error(err);
