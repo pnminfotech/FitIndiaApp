@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-// import venues from '../../jsondata/SportVenue.json';
 import { FaTrash } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
+import Pagination from "../../components/Pagination";
 
 const VenueList = () => {
   const [venues, setVenues] = useState([]); // Adding Venues
@@ -15,7 +15,7 @@ const VenueList = () => {
     image: null,
   });
   const [currentPage, setCurrentPage] = useState(1); //Pagination
-  const venuesPerPage = 1;
+  const venuesPerPage = 8;
 
   //Compute visible venues:
   const indexOfLastVenue = currentPage * venuesPerPage;
@@ -193,43 +193,12 @@ const VenueList = () => {
           ))}
         </div>
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-10 gap-4 flex-wrap">
-            <button
-              className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-              onClick={() =>
-                setCurrentPage((prev) => {
-                  Math.max(prev - 1,1);
-                })
-              }
-              disabled={currentPage == 1}
-            >
-              Previous
-            </button>
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-4 py-2 rounded-lg ${
-                  currentPage === index + 1
-                    ? "bg-cyan-600 text-white"
-                    : "bg-gray-200 hover:bg-gray-300"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-            <button
-              className="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 disabled:opacity-50"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalItems={venues.length}
+          itemsPerPage={venuesPerPage}
+          onPageChange={(page) => setCurrentPage(page)}
+        />
       </div>
 
       {/* To Do for Edit  Form */}

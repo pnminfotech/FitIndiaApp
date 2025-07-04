@@ -17,7 +17,7 @@ const AdminLayout = () => {
         {/* Sidebar */}
         <aside className="w-full md:w-64 font-bold  bg-gray-700 text-white">
           <div className="text-2xl font-bold text-center py-4 border-b border-black-600">
-            Admin 
+            Admin
           </div>
           <nav className="p-4 flex md:flex-col flex-wrap justify-around md:justify-start gap-2">
             <NavLink
@@ -25,9 +25,7 @@ const AdminLayout = () => {
               className={({ isActive }) =>
                 `text-sm md:text-xl p-5 rounded-lg flex items-center gap-3 transition-all duration-200
     ${
-      isActive
-        ? "bg-gray-400 text-black"
-        : "hover:bg-gray-300 hover:text-black"
+      isActive ? "bg-gray-400 text-black" : "hover:bg-gray-300 hover:text-black"
     }`
               }
             >
@@ -45,7 +43,7 @@ const AdminLayout = () => {
               Venues
             </Link>
             <Link
-             className="hover:bg-gray-300 hover:text-black text-sm md:text-xl p-5 rounded-lg flex items-center gap-3 transition-all duration-200"
+              className="hover:bg-gray-300 hover:text-black text-sm md:text-xl p-5 rounded-lg flex items-center gap-3 transition-all duration-200"
               to="/admin/venues/add"
             >
               <span>
