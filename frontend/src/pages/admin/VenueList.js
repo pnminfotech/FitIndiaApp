@@ -69,7 +69,6 @@ const VenueList = () => {
   };
 
   //Update VenueList
-
   const submitUpdate = async () => {
     const fd = new FormData();
 
