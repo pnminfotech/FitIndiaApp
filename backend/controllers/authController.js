@@ -13,14 +13,34 @@ export const sendOtp = async (req, res) => {
   res.json({ message: "OTP sent successfully" });
 };
 
-// ✅ Named export
+// controllers/authController.js
+
 export const verifyOtp = async (req, res) => {
-  const { mobile, otp } = req.body;
+  const { mobile, otp, role } = req.body;
+
+  if (!mobile || !otp || !role) {
+    return res.status(400).json({ error: "Mobile, OTP and role are required" });
+  }
+
   const valid = verifyOtpCode(mobile, otp);
   if (!valid) return res.status(400).json({ error: "Invalid OTP" });
 
   let user = await User.findOne({ mobile });
-  if (!user) user = await User.create({ mobile });
+
+  if (user) {
+    if (user.role !== role) {
+      return res.status(403).json({ error: "Role mismatch. Unauthorized login." });
+    }
+  } else {
+    user = await User.create({
+      mobile,
+      role,
+      location: {
+        type: "Point",
+        coordinates: [0, 0],
+      },
+    });
+  }
 
   user.isVerified = true;
   await user.save();

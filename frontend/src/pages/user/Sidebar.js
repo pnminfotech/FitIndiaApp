@@ -1,104 +1,89 @@
-import React from "react";
-import { MdDashboard } from "react-icons/md";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
-import { AiOutlinePlusCircle } from "react-icons/ai";
-import { FaUserTie } from "react-icons/fa";
-import { FaClipboardList } from "react-icons/fa";
-import { NavLink, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  FaUser,
+  FaHome,
+  FaPlus,
+  FaChalkboardTeacher,
+  FaClipboardList,
+  FaTimes,
+} from "react-icons/fa";
 import profileimg from "../../assets/profile.png";
 
-const Sidebar = () => {
+const Sidebar = ({ onClose }) => {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, []);
+
+  const fetchUserDetails = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      const res = await fetch("http://localhost:8000/api/users/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch user");
+
+      const data = await res.json();
+      setUser(data);
+    } catch (err) {
+      console.error("Error fetching user:", err);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#2f3e55] text-white shadow-md flex flex-col">
-        {/* Header */}
-        <div className="text-2xl font-bold text-center py-6 border-b border-gray-500">
-          <div className="flex flex-col items-center justify-center">
-            <img src={profileimg} alt="profile" className="w-24" />
-            
-          </div>
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black bg-opacity-40 z-[1001]"
+        onClick={onClose}
+      />
+
+      {/* Sidebar Panel */}
+      <div className="fixed top-0 left-0 h-full w-64 bg-[#1E293B] shadow-lg z-[1002] text-white transition-transform">
+        <div className="flex flex-col items-center border-b border-gray-700 pb-6 pt-6 px-4 relative">
+          <img
+            src={profileimg}
+            alt="profile"
+            className="w-16 h-16 rounded-full mb-2 border-2 border-white"
+          />
+          {user ? (
+            <p className="text-sm text-gray-200">📱 {user.mobile}</p>
+          ) : (
+            <p className="text-sm text-gray-400">Loading...</p>
+          )}
+          <button
+            onClick={onClose}
+            className="text-xl hover:text-red-500 absolute top-2 right-2"
+          >
+            <FaTimes />
+          </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="flex flex-col py-4 px-2 space-y-2">
-          <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all ${
-                isActive
-                  ? "bg-white text-[#2f3e55]"
-                  : "hover:bg-gray-700 hover:text-white"
-              }`
-            }
-          >
-            <MdDashboard size={22} className="mr-3" />
-            Profile
-          </NavLink>
-
-          <NavLink
-            to="/admin/venues"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all ${
-                isActive
-                  ? "bg-white text-[#2f3e55]"
-                  : "hover:bg-gray-700 hover:text-white"
-              }`
-            }
-          >
-            <HiOutlineBuildingOffice2 size={22} className="mr-3" />
-            Venues
-          </NavLink>
-
-          <NavLink
-            to="/admin/venues/add"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all ${
-                isActive
-                  ? "bg-white text-[#2f3e55]"
-                  : "hover:bg-gray-700 hover:text-white"
-              }`
-            }
-          >
-            <AiOutlinePlusCircle size={22} className="mr-3" />
-            Add Venue
-          </NavLink>
-
-          <NavLink
-            to="/admin/coaches"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all ${
-                isActive
-                  ? "bg-white text-[#2f3e55]"
-                  : "hover:bg-gray-700 hover:text-white"
-              }`
-            }
-          >
-            <FaUserTie size={22} className="mr-3" />
-            Coaches
-          </NavLink>
-
-          <NavLink
-            to="/admin/bookings"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium rounded-md transition-all ${
-                isActive
-                  ? "bg-white text-[#2f3e55]"
-                  : "hover:bg-gray-700 hover:text-white"
-              }`
-            }
-          >
-            <FaClipboardList size={22} className="mr-3" />
-            Bookings
-          </NavLink>
-        </nav>
-      </aside>
-
-      {/* Main content */}
-      <main className="flex-1 p-6 bg-gray-100">
-        <Outlet />
-      </main>
-    </div>
+        <ul className="p-4 space-y-4">
+          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
+            <FaUser /> Profile
+          </li>
+          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
+            <FaHome /> Venues
+          </li>
+          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
+            <FaPlus /> Add Venue
+          </li>
+          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
+            <FaChalkboardTeacher /> Coaches
+          </li>
+          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
+            <FaClipboardList /> Bookings
+          </li>
+        </ul>
+      </div>
+    </>
   );
 };
 

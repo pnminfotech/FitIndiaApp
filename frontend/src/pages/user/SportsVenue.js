@@ -1,15 +1,19 @@
+// SportsVenue.js
 import React, { useState, useEffect } from "react";
-import { FaFilter, FaChevronDown } from "react-icons/fa";
 import Header from "../../components/Header";
 import SportsGardenCard from "../../components/SportsGardenCard";
-import SportsDropdown from "../../components/SportsDropdown";
 import DateButtonWithPicker from "../../components/DateButtonWithPicker";
+import SportsDropdown from "../../components/SportsDropdown";
+import Sidebar from "./Sidebar";
+import { FaChevronDown, FaFilter } from "react-icons/fa";
 
 function SportsVenue() {
   const [venues, setVenues] = useState([]);
   const [filteredVenues, setFilteredVenues] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("All Cities");
   const [dateText, setDateText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   useEffect(() => {
     fetchVenues();
@@ -28,37 +32,35 @@ function SportsVenue() {
     }
   };
 
-  const handleDateChange = (selectedDate) => {
-    const key = selectedDate.toISOString().split("T")[0];
-    const availableNamesByDate = {
-      "2025-06-24": ["Indoor Hall A", "Outdoor Turf 1"],
-      "2025-06-25": ["Swimming Pool", "Tennis Court"],
-      "2025-06-26": [],
-    };
+  const uniqueCities = [...new Set(venues.map((v) => v.city).filter(Boolean))];
 
-    const formatted = selectedDate.toLocaleDateString("default", {
-      month: "long",
-      weekday: "short",
-      day: "numeric",
-    });
-
-    setDateText(formatted);
-
-    const availableNames = availableNamesByDate[key] || [];
-    const filtered = venues.filter((venue) =>
-      availableNames.includes(venue.name)
-    );
-    setFilteredVenues(filtered);
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+    if (city === "All Cities") {
+      setFilteredVenues(venues);
+    } else {
+      const filtered = venues.filter((v) => v.city === city);
+      setFilteredVenues(filtered);
+    }
   };
 
   return (
-    <main>
-      <Header />
+    <main className="relative">
+      {/* Header */}
+      <Header
+        selectedCity={selectedCity}
+        onSelectCity={handleCityChange}
+        uniqueCities={uniqueCities}
+        onToggleSidebar={() => setShowSidebar(true)}
+      />
+
+      {/* Conditionally show Sidebar */}
+      {showSidebar && <Sidebar onClose={() => setShowSidebar(false)} />}
 
       {/* Filters Section */}
       <section className="pt-12 px-[13px] sm:px-[100px]">
         <div className="flex justify-between items-center">
-          <h1 className=" text-xs font-bold">
+          <h1 className="text-xs font-bold">
             AVAILABLE VENUES <span className="text-gray-500">({filteredVenues.length})</span>
           </h1>
           <button className="text-blue-500 font-semibold text-lg border-none flex items-center gap-2">
@@ -68,37 +70,33 @@ function SportsVenue() {
         </div>
 
         <div className="flex items-center gap-6 pt-6 flex-wrap">
-          <div>
-            <DateButtonWithPicker onDateChange={handleDateChange} />
-            {dateText && (
-              <div className="mt-4">
-                <h3 className="font-semibold">Available Venues on {dateText}:</h3>
-                {filteredVenues.length > 0 ? (
-                  <ul className="list-disc list-inside">
-                    {filteredVenues.map((v, idx) => (
-                      <li key={idx}>{v.name}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>No venues available.</p>
-                )}
-              </div>
-            )}
-          </div>
-
+          <DateButtonWithPicker
+            onDateChange={(date) => {
+              const formatted = date.toLocaleDateString("default", {
+                month: "long",
+                weekday: "short",
+                day: "numeric",
+              });
+              setDateText(formatted);
+            }}
+          />
+          {dateText && <p className="text-sm text-gray-600">Selected Date: {dateText}</p>}
           <hr className="h-[40px] border-l border-gray-300" />
-          <SportsDropdown />
+
           <button className="px-4 py-2 text-blue-500 border border-gray-300 rounded-full flex items-center text-sm font-medium">
             Amenities <FaChevronDown className="ml-1" />
           </button>
+
+          <SportsDropdown />
+
           <button className="px-4 py-2 text-blue-500 border border-gray-300 rounded-full flex items-center text-sm font-medium">
             Timings <FaChevronDown className="ml-1" />
           </button>
         </div>
       </section>
 
-      {/* Venue Cards Section */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[13px] sm:px-[100px]  py-10">
+      {/* Venue Cards */}
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[13px] sm:px-[100px] py-10">
         {loading ? (
           <p>Loading venues...</p>
         ) : filteredVenues.length > 0 ? (

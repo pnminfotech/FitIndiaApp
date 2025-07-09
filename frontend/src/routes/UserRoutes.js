@@ -7,6 +7,7 @@ import Events from "../pages/user/Events";
 import Login from "../pages/user/Login";
 import UserDashboard from "../pages/user/UserDashboard";
 import Sidebar from "../pages/user/Sidebar";
+import UserProfile from "../pages/user/UserProfile";
 
 // import { useAuth } from '../context/AuthContext';
 
@@ -17,14 +18,17 @@ export default function UserRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="login" />} />
+      <Route path="/" element={<Navigate to="/user/login" />} />
+  <Route path="login" element={<Login />} />
+        <Route path="sportsvenue" element={<SportsVenue />} />
+        <Route path="profile" element={<UserProfile />} />
        <Route element={<Sidebar />}>
-      <Route path="login" element={<Login />} />
+    
       <Route path="homepage" element={<Homepage />} />
-      <Route path="sportsvenue" element={<SportsVenue />} />
+     
       <Route path="coaching" element={<Coaching />} />
       <Route path="events" element={<Events />} />
-       <Route path="profile" element={<UserDashboard />} />
+       <Route path="userdashboard" element={<UserDashboard />} />
        </Route>
     </Routes>
   );

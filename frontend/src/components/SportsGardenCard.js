@@ -21,8 +21,9 @@ const SportsGardenCard = ({ garden }) => {
 
       {/* Location */}
       <p className="text-gray-600 text-sm sm:text-base mt-1">
-        {garden?.location || `${garden?.city || ""}, ${garden?.address || ""}`}
-      </p>
+  {garden?.location?.address || `${garden?.city || ""}, ${garden?.address || ""}`}
+</p>
+
 
       {/* Image + Discount Badge */}
       <div className="relative mt-3">

@@ -1,8 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
   mobile: { type: String, required: true, unique: true },
-  name: { type: String },
+  name: String,
+  city: String,
   location: {
     type: {
       type: String,
@@ -10,11 +11,16 @@ const userSchema = new mongoose.Schema({
       default: 'Point'
     },
     coordinates: {
-      type: [Number], // [longitude, latitude]
+      type: [Number] // [longitude, latitude]
     }
   },
   sportsPreferences: [String],
   isVerified: { type: Boolean, default: false },
+  role: {
+    type: String,
+    enum: ['user', 'coach', 'admin'],
+    default: 'user'
+  }
 }, { timestamps: true });
 
 userSchema.index({ location: "2dsphere" });

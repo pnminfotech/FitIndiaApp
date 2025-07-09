@@ -18,6 +18,10 @@ export const getMe = (req, res) => {
   });
 };
 
+export const getAllUsers = async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+};
 
  export const updateMe = async (req, res) => {
     const updates = req.body;
