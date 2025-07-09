@@ -5,10 +5,15 @@ function AddVenue() {
   const [venue, setVenue] = useState({
     name: "",
     city: "",
-    address: "",
-    sports: "",
+    location: {
+      address: "",
+      lat: "",
+      lng: "",
+    },
     pricing: "",
     image: null,
+    sports:"",
+    amenities:"",
   });
 
   const handleSubmit = async (e) => {
@@ -17,12 +22,13 @@ function AddVenue() {
     const formData = new FormData();
     formData.append("name", venue.name);
     formData.append("city", venue.city);
-    formData.append("address", venue.address);
+    formData.append("location[address]", venue.location.address);
+    formData.append("location[lat]", venue.location.lat);
+    formData.append("location[lng]", venue.location.lng);
     formData.append("pricing", venue.pricing);
-    formData.append("sports", venue.sports);
     formData.append("image", venue.image); // must match field used in multer
-
-
+    formData.append("sports", venue.sports); // comma-separated string
+    formData.append("amenities", venue.amenities); // comma-separated string
     try {
       const res = await fetch("http://localhost:8000/api/venues", {
         method: "POST",
@@ -34,10 +40,15 @@ function AddVenue() {
         setVenue({
           name: "",
           city: "",
-          address: "",
+          location: {
+            address: "",
+            lat: "",
+            lng: "",
+          },
           pricing: "",
-          sports: "",
           image: null,
+          sports:"",
+          amenities:"",
         });
       } else {
         alert("Failed to add venue");
@@ -102,23 +113,47 @@ function AddVenue() {
               id="address"
               placeholder="Address"
               className="pl-2 h-12 w-full bg-gray-200  rounded-lg"
-              value={venue.address}
-              onChange={(e) => setVenue({ ...venue, address: e.target.value })}
+              value={venue.location.address}
+              onChange={(e) =>
+                setVenue({
+                  ...venue,
+                  location: { ...venue.location, address: e.target.value },
+                })
+              }
             />
           </div>
 
-          {/* Sports */}
-          <div className="bg-white  p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5 font-medium text-lg sm:text-xl">
-            <label htmlFor="sport" className="sm:w-40 text-nowrap">
-              Sports:
-            </label>
+          {/* Latitude */}
+          <div className="bg-white p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5 font-medium text-lg sm:text-xl">
+            <label className="sm:w-40 text-nowrap">Latitude:</label>
             <input
-              type="text"
-              id="sport"
-              placeholder="Sports (comma separated)"
-              className="pl-2 h-12 w-full bg-gray-200  rounded-lg"
-              value={venue.sports}
-              onChange={(e) => setVenue({ ...venue, sports: e.target.value })}
+              type="number"
+              placeholder="Latitude"
+              className="pl-2 h-12 w-full bg-gray-200 rounded-lg"
+              value={venue.location.lat}
+              onChange={(e) =>
+                setVenue({
+                  ...venue,
+                  location: { ...venue.location, lat: e.target.value },
+                })
+              }
+            />
+          </div>
+
+          {/* Longitude */}
+          <div className="bg-white p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5 font-medium text-lg sm:text-xl">
+            <label className="sm:w-40 text-nowrap">Longitude:</label>
+            <input
+              type="number"
+              placeholder="Longitude"
+              className="pl-2 h-12 w-full bg-gray-200 rounded-lg"
+              value={venue.location.lng}
+              onChange={(e) =>
+                setVenue({
+                  ...venue,
+                  location: { ...venue.location, lng: e.target.value },
+                })
+              }
             />
           </div>
 
@@ -151,6 +186,98 @@ function AddVenue() {
               onChange={(e) => setVenue({ ...venue, image: e.target.files[0] })}
             />
           </div>
+
+          {/* Sports */}
+          <div className="bg-white  p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5 font-medium text-lg sm:text-xl">
+            <label htmlFor="sport" className="sm:w-40 text-nowrap">
+              Sports:
+            </label>
+            <input
+              type="text"
+              id="sport"
+              placeholder="Sports (comma separated)"
+              className="pl-2 h-12 w-full bg-gray-200  rounded-lg"
+              value={venue.sports}
+              onChange={(e) => setVenue({ ...venue, sports: e.target.value })}
+            />
+          </div>
+
+          {/* amenities */}
+          <div className="bg-white p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5 font-medium text-lg sm:text-xl">
+            <label htmlFor="amenities" className="sm:w-40 text-nowrap">
+              Amenities:
+            </label>
+            <input
+              type="text"
+              id="amenities"
+              placeholder="Amenities (comma separated)"
+              className="pl-2 h-12 w-full bg-gray-200 rounded-lg"
+              value={venue.amenities}
+              onChange={(e) =>
+                setVenue({ ...venue, amenities: e.target.value })
+              }
+            />
+          </div>
+
+          {/* Timing Slots */}
+          {/* <div className="bg-white p-6 rounded-3xl font-medium text-lg sm:text-xl">
+            <label className="block mb-2 text-xl">Timing Slots:</label>
+            {venue.timingSlots.map((slot, index) => (
+              <div
+                key={index}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4"
+              >
+                <input
+                  type="text"
+                  placeholder="Day"
+                  className="pl-2 h-12 bg-gray-200 rounded-lg"
+                  value={slot.day}
+                  onChange={(e) => {
+                    const updatedSlots = [...venue.timingSlots];
+                    updatedSlots[index].day = e.target.value;
+                    setVenue({ ...venue, timingSlots: updatedSlots });
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="Start Time"
+                  className="pl-2 h-12 bg-gray-200 rounded-lg"
+                  value={slot.startTime}
+                  onChange={(e) => {
+                    const updatedSlots = [...venue.timingSlots];
+                    updatedSlots[index].startTime = e.target.value;
+                    setVenue({ ...venue, timingSlots: updatedSlots });
+                  }}
+                />
+                <input
+                  type="text"
+                  placeholder="End Time"
+                  className="pl-2 h-12 bg-gray-200 rounded-lg"
+                  value={slot.endTime}
+                  onChange={(e) => {
+                    const updatedSlots = [...venue.timingSlots];
+                    updatedSlots[index].endTime = e.target.value;
+                    setVenue({ ...venue, timingSlots: updatedSlots });
+                  }}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() =>
+                setVenue({
+                  ...venue,
+                  timingSlots: [
+                    ...venue.timingSlots,
+                    { day: "", startTime: "", endTime: "" },
+                  ],
+                })
+              }
+              className="mt-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              + Add Slot
+            </button>
+          </div> */}
         </div>
 
         {/* Submit Button */}

@@ -5,4 +5,4 @@ const AdminSchema = new mongoose.Schema({
   password: String, // Hashed
   role: { type: String, default: "admin" },
 });
-module.exports = mongoose.model("Admin", AdminSchema);
+export default mongoose.model('AdminModel', AdminSchema)

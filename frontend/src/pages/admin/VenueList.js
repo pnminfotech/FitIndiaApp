@@ -5,14 +5,22 @@ import Pagination from "../../components/Pagination";
 
 const VenueList = () => {
   const [venues, setVenues] = useState([]); // Adding Venues
+  const [openSportsVenueId, setOpenSportsVenueId] = useState(null);
+  const [openAmenitiesVenueId, setOpenAmenitiesVenueId] = useState(null);
   const [editingVenue, setEditingVenue] = useState(null);
   const [editForm, setEditForm] = useState({
     name: "",
     city: "",
     address: "",
-    sports: "",
+    location: {
+      address: "",
+      lat: "",
+      lng: "",
+    },
     pricing: "",
     image: null,
+    sports: "",
+    amenities: "",
   });
   const [currentPage, setCurrentPage] = useState(1); //Pagination
   const venuesPerPage = 8;
@@ -48,36 +56,60 @@ const VenueList = () => {
     setEditForm({
       name: ven.name,
       city: ven.city,
-      address: ven.address,
-      sports: Array.isArray(ven.sports) ? ven.sports.join(",") : ven.sports,
+      location: {
+        address: ven.location?.address || "",
+        lat: ven.location?.lat || "",
+        lng: ven.location?.lng || "",
+      },
       pricing: ven.pricing,
       image: null,
+      sports: ven.sports,
+      amenities: ven.amenities,
     });
   };
 
   //Update VenueList
+
   const submitUpdate = async () => {
     const fd = new FormData();
 
-    Object.entries(editForm).forEach(([k, v]) => {
-      if (k !== "image" && v !== null) fd.append(k, v);
-    });
-    if (editForm.image) fd.append("image", editForm.image);
+    fd.append("name", editForm.name);
+    fd.append("city", editForm.city);
+    fd.append("pricing", editForm.pricing);
 
-    const res = await fetch(
-      `http://localhost:8000/api/venues/${editingVenue._id}`,
-      {
-        method: "PUT",
-        body: fd,
+    // Flatten location for FormData
+    fd.append("location[address]", editForm.location.address);
+    fd.append("location[lat]", editForm.location.lat);
+    fd.append("location[lng]", editForm.location.lng);
+    fd.append("sports", editForm.sports);
+    fd.append("amenities", editForm.amenities);
+
+    if (editForm.image) {
+      fd.append("image", editForm.image);
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:8000/api/venues/${editingVenue._id}`,
+        {
+          method: "PUT",
+          body: fd,
+        }
+      );
+
+      if (res.ok) {
+        alert("Data Updated Successfully");
+        fetchVenues();
+        setEditingVenue(null);
+      } else {
+        const errData = await res.json();
+        console.error("Update error:", errData);
+        alert("Failed To Update Venue");
       }
-    );
-    console.log("Sending update for venue ID:", editingVenue._id);
-    if (res.ok) {
-      alert("Data Updated Successfully");
-
-      fetchVenues();
-      setEditingVenue(null);
-    } else alert("Failed To Update Venue");
+    } catch (err) {
+      console.error("Submit update error:", err);
+      alert("Something went wrong during update.");
+    }
   };
 
   // Delete Venue List
@@ -125,12 +157,13 @@ const VenueList = () => {
                 <div>
                   <h3 className="text-lg font-bold mb-1">{venue.name}</h3>
                   <p className="text-sm mb-2">
-                    {venue.city}, {venue.address}
+                    {venue.city},{" "}
+                    {venue.location?.address || "Address not available"}
                   </p>
                   <h4 className="text-base mb-2 font-semibold">
                     Price: <span className="font-normal">{venue.pricing}</span>
                   </h4>
-                  <div className="flex flex-wrap gap-2 text-xs sm:text-sm mb-2">
+                  {/* <div className="flex flex-wrap gap-2 text-xs sm:text-sm mb-2">
                     {venue.sports.map((sport, idx) => (
                       <span
                         key={idx}
@@ -139,6 +172,88 @@ const VenueList = () => {
                         {sport}
                       </span>
                     ))}
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs sm:text-sm mb-2">
+                    {venue.amenities.map((amenities, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-gray-300 px-3 py-1 rounded-full"
+                      >
+                        {amenities}
+                      </span>
+                    ))}
+                  </div> */}
+
+                  {/* Sports Dropdown */}
+                  <div className="mb-2">
+                    <button
+                      className="text-md border border-gray-600 p-2 rounded-lg"
+                      onClick={() =>
+                        setOpenSportsVenueId(
+                          openSportsVenueId === venue._id ? null : venue._id
+                        )
+                      }
+                    >
+                      {openSportsVenueId === venue._id
+                        ? "Hide Sports"
+                        : "View Sports"}
+                    </button>
+
+                    {openSportsVenueId === venue._id && (
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs sm:text-sm">
+                        {Array.isArray(venue.sports) &&
+                        venue.sports.length > 0 ? (
+                          venue.sports.map((sport, idx) => (
+                            <span
+                              key={idx}
+                              className="bg-gray-300 px-3 py-1 rounded-full"
+                            >
+                              {sport}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">
+                            No sports listed
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Amenities Dropdown */}
+                  <div className="mb-2">
+                    <button
+                      className="text-md border border-gray-600 p-2 rounded-lg"
+                      onClick={() =>
+                        setOpenAmenitiesVenueId(
+                          openAmenitiesVenueId === venue._id ? null : venue._id
+                        )
+                      }
+                    >
+                      {openAmenitiesVenueId === venue._id
+                        ? "Hide Amenities"
+                        : "View Amenities"}
+                    </button>
+
+                    {openAmenitiesVenueId === venue._id && (
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs sm:text-sm">
+                        {Array.isArray(venue.amenities) &&
+                        venue.amenities.length > 0 ? (
+                          venue.amenities.map((item, idx) => (
+                            <span
+                              key={idx}
+                              className="bg-gray-300 px-3 py-1 rounded-full"
+                            >
+                              {item}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-500">
+                            No amenities listed
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-end gap-2 mt-4">
@@ -226,9 +341,49 @@ const VenueList = () => {
                   id="address"
                   placeholder="Address"
                   className="pl-2 h-12 w-full bg-gray-100 border border-gray-300 rounded-lg"
-                  value={editForm.address}
+                  value={editForm.location.address}
                   onChange={(e) =>
-                    setEditForm({ ...editForm, address: e.target.value })
+                    setEditForm({
+                      ...editForm,
+                      location: {
+                        ...editForm.location,
+                        address: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </div>
+
+              {/* Latitude */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <label className="sm:w-40 text-nowrap">Latitude:</label>
+                <input
+                  type="number"
+                  placeholder="Latitude"
+                  className="pl-2 h-12 w-full bg-gray-100 border border-gray-300 rounded-lg"
+                  value={editForm.location.lat}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      location: { ...editForm.location, lat: e.target.value },
+                    })
+                  }
+                />
+              </div>
+
+              {/* Longitude */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <label className="sm:w-40 text-nowrap">Longitude:</label>
+                <input
+                  type="number"
+                  placeholder="Longitude"
+                  className="pl-2 h-12 w-full bg-gray-100 border border-gray-300 rounded-lg"
+                  value={editForm.location.lng}
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      location: { ...editForm.location, lng: e.target.value },
+                    })
                   }
                 />
               </div>
@@ -246,6 +401,22 @@ const VenueList = () => {
                   value={editForm.sports}
                   onChange={(e) =>
                     setEditForm({ ...editForm, sports: e.target.value })
+                  }
+                />
+              </div>
+              {/* Amenities */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+                <label htmlFor="amenities" className="sm:w-40 text-nowrap">
+                  Amenities:
+                </label>
+                <input
+                  type="text"
+                  id="amenities"
+                  placeholder="amenities (comma separated)"
+                  className="pl-2 h-12 w-full bg-gray-100 border border-gray-300 rounded-lg"
+                  value={editForm.amenities}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, amenities: e.target.value })
                   }
                 />
               </div>
@@ -290,7 +461,11 @@ const VenueList = () => {
                       name: "",
                       city: "",
                       address: "",
-                      sports: "",
+                      location: {
+                        address: "",
+                        lat: "",
+                        lng: "",
+                      },
                       pricing: "",
                       image: null,
                     });

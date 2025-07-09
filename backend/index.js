@@ -6,6 +6,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';                     // Handle cross-origin requests
 import venueRoutes from './routes/venueRoutes.js'  // Import venue route handler
 import ConnectDb from './config/db.js';
+import slotRoutes from './routes/slotRoutes.js';
 
 dotenv.config();  // Load environment variables
 const __filename = fileURLToPath(import.meta.url);
@@ -22,6 +23,7 @@ app.get('/', (req, res) =>{             // Basic health check route
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/api/venues', venueRoutes);  // Routes for venue management
+app.use("/api/slots", slotRoutes);  // Routes for Slot Management
 
 
 

@@ -6,7 +6,23 @@ import VenueModel from "../models/VenueModel.js";
 // Post/ add New data
 export const createVenue = async (req, res) => {
   try {
-    const { name, city, address, sports, pricing } = req.body;
+    const { name, city,location, pricing } = req.body;
+    const sports = req.body.sports?.split(',').map(item => item.trim()) || [];
+    const amenities = req.body.amenities?.split(',').map(item => item.trim()) || [];
+
+    console.log("BODY RECEIVED:", req.body);
+    const loc = {
+      address: location?.address || "",
+      lat: parseFloat(location?.lat),
+      lng: parseFloat(location?.lng),
+    };
+
+    if (!loc.address || isNaN(loc.lat) || isNaN(loc.lng)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing location fields", loc });
+    }
+
     let imageFileName = "";
 
     if (req.file) {
@@ -35,10 +51,11 @@ export const createVenue = async (req, res) => {
     const venue = new VenueModel({
       name,
       city,
-      address,
-      sports,
+      location: loc,
       pricing,
       image: imageFileName,
+      sports,
+      amenities
     });
 
     const saved = await venue.save();
@@ -63,13 +80,30 @@ export const getAllVenue = async (req, res) => {
 // update venue
 export const updateVenue = async (req, res) => {
   try {
-    const { name, city, address, sports, pricing } = req.body;
-    let updated = { name, city, address, pricing };
+    const { name, city,location, pricing, sports, amenities } = req.body;
+    // Parse location fields from FormData
+    const loc = {
+      address: location?.address || "",
+      lat: parseFloat(location?.lat),
+      lng: parseFloat(location?.lng),
+    };
+
+    if (!loc.address || isNaN(loc.lat) || isNaN(loc.lng)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing location fields", loc });
+    }
+    let updated = { name, city, location:loc, pricing};
 
     if (sports) {
       updated.sports = sports.includes(",")
         ? sports.split(",").map((s) => s.trim())
         : [sports];
+    }
+    if (amenities) {
+      updated.amenities = amenities.includes(",")
+        ? amenities.split(",").map((s) => s.trim())
+        : [amenities];
     }
 
     if (req.file) {

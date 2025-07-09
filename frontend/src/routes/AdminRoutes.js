@@ -6,6 +6,8 @@ import VenueList from '../pages/admin/VenueList';
 import AddVenue from '../pages/admin/AddVenue';
 import CoachList from '../pages/admin/CoachList';
 import BookingList from '../pages/admin/BookingList';
+import ManageSlots from '../pages/admin/ManageSlots';
+
 
 export default function AdminRoutes() {
   return (
@@ -16,6 +18,7 @@ export default function AdminRoutes() {
         <Route path="venues/add" element={<AddVenue />} />
         <Route path="coaches" element={<CoachList />} />
         <Route path="bookings" element={<BookingList />} /> 
+        <Route path="slots" element={<ManageSlots />} />
       </Route>
     </Routes>
   );
