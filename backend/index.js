@@ -9,7 +9,9 @@ import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 import ConnectDb from './config/db.js';
-
+import slotRoutes from './routes/slotRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import blockRouter from './routes/blockRouter.js';
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -24,9 +26,16 @@ app.get('/', (req, res) => {
 });
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// HEAD
+app.use('/api/venues', venueRoutes);  // Routes for venue management
+app.use("/api/slots", slotRoutes);  // Routes for Slot Management
+
 app.use('/api/venues', venueRoutes);
 app.use('/api/auth', authRoutes);       
-app.use('/api/users', userRoutes);     
+app.use('/api/users', userRoutes);   
+app.use("/api/bookings", bookingRoutes); 
+app.use('/api/block', blockRouter);  
+//  dc113a7d2ba3c4c9c43a4b6727cc2f3dc19feddd
 
 const port = process.env.PORT || 3000;
 app.listen(port, async () => {

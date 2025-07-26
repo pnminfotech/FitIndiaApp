@@ -1,4 +1,7 @@
 import User from '../models/User.js';
+import Venue from '../models/VenueModel.js';
+import Booking from '../models/Booking.js';
+import BlockedSlot from '../models/BlockedSlot.js';
 
 
 // controllers/userController.js
@@ -13,6 +16,8 @@ export const getMe = (req, res) => {
     mobile: user.mobile,
     name: user.name,
     city: user.city,
+     gender: user.gender,
+    dateOfBirth: user.dateOfBirth,
     sportsPreferences: user.sportsPreferences,
     createdAt: user.createdAt,
   });
@@ -48,5 +53,61 @@ export const getAllUsers = async (req, res) => {
     res.status(200).json({ message: "Location saved", user });
   } catch (error) {
     res.status(500).json({ error: "Failed to update location" });
+  }
+};
+// GET /slots/:venueId/:courtId?date=2025‑07‑15
+
+
+
+export const getAvailableSlots = async (req, res) => {
+  const { venueId, courtId } = req.params;
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ message: "Date query param is required (yyyy-mm-dd)" });
+  }
+
+  try {
+    const venue = await Venue.findById(venueId);
+    if (!venue) return res.status(404).json({ message: "Venue not found" });
+
+    const court = venue.courts.id(courtId);
+    if (!court) return res.status(404).json({ message: "Court not found" });
+
+    const courtSlots = court.slots;
+
+    // Format date filter
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 1);
+
+    // Fetch bookings & blocks for same date
+    const bookings = await Booking.find({
+      venueId,
+      courtId,
+      date: { $gte: start, $lt: end },
+      status: "booked"
+    });
+
+    const blockedSlots = await BlockedSlot.find({
+      venueId,
+      courtId,
+      date: { $gte: start, $lt: end }
+    });
+
+    const unavailable = new Set(
+      [...bookings, ...blockedSlots].map(s => `${s.startTime}-${s.endTime}`)
+    );
+
+    const availableSlots = courtSlots.filter(s => {
+      const key = `${s.startTime}-${s.endTime}`;
+      return !unavailable.has(key) && s.isAvailable !== false;
+    });
+
+    res.json(availableSlots);
+  } catch (err) {
+    console.error("Error getting available slots:", err);
+    res.status(500).json({ message: "Server error fetching available slots" });
   }
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FaUser,
   FaHome,
@@ -7,11 +8,13 @@ import {
   FaClipboardList,
   FaTimes,
 } from "react-icons/fa";
+
 import profileimg from "../../assets/profile.png";
+import MyBookings from "./MyBookings";
 
 const Sidebar = ({ onClose }) => {
   const [user, setUser] = useState(null);
-
+ const navigate = useNavigate();
   useEffect(() => {
     fetchUserDetails();
   }, []);
@@ -65,23 +68,48 @@ const Sidebar = ({ onClose }) => {
           </button>
         </div>
 
-        <ul className="p-4 space-y-4">
-          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
-            <FaUser /> Profile
-          </li>
-          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
-            <FaHome /> Venues
-          </li>
-          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
-            <FaPlus /> Add Venue
-          </li>
-          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
-            <FaChalkboardTeacher /> Coaches
-          </li>
-          <li className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer">
-            <FaClipboardList /> Bookings
-          </li>
-        </ul>
+       <ul className="p-4 space-y-4">
+  <li
+    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+    onClick={() => {
+      onClose();
+      navigate("/user/homepage");
+    }}
+  >
+    <FaHome /> Homepage
+  </li>
+
+  <li
+    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+    onClick={() => {
+      onClose();
+      navigate("/user/profile");
+    }}
+  >
+    <FaUser /> Profile
+  </li>
+
+  <li
+    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+    onClick={() => {
+      onClose();
+      navigate("/user/sportsvenue");
+    }}
+  >
+    <FaPlus /> Venues
+  </li>
+
+  <li
+    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+    onClick={() => {
+      onClose();
+      navigate("/user/mybookings");
+    }}
+  >
+    <FaClipboardList /> My Bookings
+  </li>
+</ul>
+
       </div>
     </>
   );

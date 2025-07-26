@@ -11,7 +11,7 @@ function App() {
         <Route path="/admin/*" element={<AdminRoutes />} />
         <Route path="/user/*" element={<UserRoutes />} />
         <Route path="/coach/*" element={<CoachRoutes />} />
-        <Route path="*" element={<Navigate to="/user/login" />} />
+        <Route path="*" element={<Navigate to="/user/homepage" />} />
       </Routes>
     </Router>
   );

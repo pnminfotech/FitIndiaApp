@@ -1,45 +1,65 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-function BookingList() {
-  const booking = [
-    {
-      user: "Pooja",
-      venue: "Turf One",
-      date: "2025-06-26",
-    },
-    {
-      user: "Kirti",
-      venue: "Play Zone",
-      date: "2025-06-26",
-    },
-  ];
+const BookingList = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/users", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch users:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6">
-      <h2 className="font-bold text-2xl sm:text-3xl mb-6 text-center sm:text-left">
-        All Bookings
-      </h2>
+    <div className="px-4 py-6 overflow-x-auto">
+      <h2 className="text-2xl font-bold mb-6">👥 All Registered Users</h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {booking.map((val, idx) => (
-          <div
-            key={idx}
-            className="bg-white h-44 w-full rounded-3xl flex flex-col items-center justify-center shadow-md p-4 text-center"
-          >
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1">
-              <strong>User:</strong> {val.user}
-            </p>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-1">
-              <strong>Venue:</strong> {val.venue}
-            </p>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl">
-              <strong>Date:</strong> {val.date}
-            </p>
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <p className="text-gray-500">Loading users...</p>
+      ) : users.length === 0 ? (
+        <p className="text-red-500">No users found.</p>
+      ) : (
+        <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-gray-100 text-left">
+            <tr>
+              <th className="px-4 py-3 border-b">#</th>
+              <th className="px-4 py-3 border-b">Name</th>
+              <th className="px-4 py-3 border-b">Mobile</th>
+              <th className="px-4 py-3 border-b">Gender</th>
+              <th className="px-4 py-3 border-b">City</th>
+              <th className="px-4 py-3 border-b">Joined Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user, idx) => (
+              <tr key={idx} className="hover:bg-gray-50">
+                <td className="px-4 py-3 border-b">{idx + 1}</td>
+                <td className="px-4 py-3 border-b">{user.name || "N/A"}</td>
+                <td className="px-4 py-3 border-b">{user.mobile || "N/A"}</td>
+                <td className="px-4 py-3 border-b">{user.gender || "N/A"}</td>
+                <td className="px-4 py-3 border-b">{user.city || "N/A"}</td>
+                <td className="px-4 py-3 border-b">
+                  {user.createdAt?.split("T")[0]}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
-}
+};
 
 export default BookingList;

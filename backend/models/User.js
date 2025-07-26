@@ -4,6 +4,12 @@ const userSchema = new mongoose.Schema({
   mobile: { type: String, required: true, unique: true },
   name: String,
   city: String,
+  gender: {
+  type: String,
+  enum: ['Male', 'Female', 'Other'],
+  default: 'Male',
+},
+dateOfBirth: Date,
   location: {
     type: {
       type: String,

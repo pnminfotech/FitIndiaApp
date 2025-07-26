@@ -62,7 +62,7 @@ const navigate = useNavigate();
         localStorage.setItem("role", role.toLowerCase());
         alert(`${role} login successful`);
        // With this:
-navigate("/user/homepage");// redirect path
+navigate("/user/homepage");
       } else {
         alert(data.error || "OTP verification failed");
       }
@@ -72,12 +72,7 @@ navigate("/user/homepage");// redirect path
       setLoading(false);
     }
   };
-useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    navigate("/user/homepage");
-  }
-}, []);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded shadow-md w-96">

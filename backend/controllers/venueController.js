@@ -6,7 +6,23 @@ import VenueModel from "../models/VenueModel.js";
 // Post/ add New data
 export const createVenue = async (req, res) => {
   try {
-    const { name, city, address, sports, pricing } = req.body;
+    const { name, city,location, pricing, description } = req.body;
+    const sports = req.body.sports?.split(',').map(item => item.trim()) || [];
+    const amenities = req.body.amenities?.split(',').map(item => item.trim()) || [];
+
+    console.log("BODY RECEIVED:", req.body);
+    const loc = {
+      address: location?.address || "",
+      lat: parseFloat(location?.lat),
+      lng: parseFloat(location?.lng),
+    };
+
+    if (!loc.address || isNaN(loc.lat) || isNaN(loc.lng)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing location fields", loc });
+    }
+
     let imageFileName = "";
 
     if (req.file) {
@@ -35,10 +51,12 @@ export const createVenue = async (req, res) => {
     const venue = new VenueModel({
       name,
       city,
-      address,
-      sports,
+      location: loc,
       pricing,
       image: imageFileName,
+       description,
+      sports,
+      amenities
     });
 
     const saved = await venue.save();
@@ -63,13 +81,31 @@ export const getAllVenue = async (req, res) => {
 // update venue
 export const updateVenue = async (req, res) => {
   try {
-    const { name, city, address, sports, pricing } = req.body;
-    let updated = { name, city, address, pricing };
+   const { name, city, location, pricing, sports, amenities, description } = req.body;
+
+    // Parse location fields from FormData
+    const loc = {
+      address: location?.address || "",
+      lat: parseFloat(location?.lat),
+      lng: parseFloat(location?.lng),
+    };
+
+    if (!loc.address || isNaN(loc.lat) || isNaN(loc.lng)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing location fields", loc });
+    }
+    let updated = { name, city, location:loc, pricing,description};
 
     if (sports) {
       updated.sports = sports.includes(",")
         ? sports.split(",").map((s) => s.trim())
         : [sports];
+    }
+    if (amenities) {
+      updated.amenities = amenities.includes(",")
+        ? amenities.split(",").map((s) => s.trim())
+        : [amenities];
     }
 
     if (req.file) {
@@ -131,3 +167,17 @@ export const deleteVenue = async (req, res) => {
     res.status(501).json({ error: "Failed to delete Venue" });
   }
 };
+
+
+// GET /api/venues/:id
+export const getVenueById = async (req, res) => {
+  try {
+    const venue = await VenueModel.findById(req.params.id);
+    if (!venue) return res.status(404).json({ message: "Venue not found" });
+    res.json(venue);
+  } catch (err) {
+    console.error("Error fetching venue by ID:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

@@ -27,7 +27,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
       {/* Always show "Select City" on button */}
       <button
         onClick={toggleDropdown}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-blue-500 bg-white text-sm font-medium shadow-sm hover:bg-gray-50"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-blue-800 bg-white text-sm font-medium shadow-sm hover:bg-gray-50"
       >
         Select City <FaChevronDown className="ml-2 mt-0.5" />
       </button>
@@ -41,7 +41,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
             {/* All Cities option */}
             <div
               onClick={() => handleSelect("All Cities")}
-              className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-500 font-medium transition-colors ${
+              className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-800 font-medium transition-colors ${
                 selectedCity === "All Cities" ? "bg-green-50" : ""
               }`}
             >
@@ -53,7 +53,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
               <div
                 key={index}
                 onClick={() => handleSelect(city)}
-                className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-500 font-medium transition-colors ${
+                className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-800 font-medium transition-colors ${
                   selectedCity === city ? "bg-green-50" : ""
                 }`}
               >
