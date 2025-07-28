@@ -32,3 +32,9 @@ dateOfBirth: Date,
 userSchema.index({ location: "2dsphere" });
 
 export default mongoose.model("User", userSchema);
+
+
+
+
+
+
