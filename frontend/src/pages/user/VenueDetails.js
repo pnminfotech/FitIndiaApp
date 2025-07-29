@@ -174,10 +174,10 @@ const VenueDetails = () => {
                   <span className="text-gray-300 text-sm font-normal ml-1">(based on reviews)</span>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold text-green-400 drop-shadow">
+              {/* <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold text-green-400 drop-shadow">
                 <FaRupeeSign />
                 <span className="text-white">Price:</span> {venue.pricing || "Contact for pricing"}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -56,7 +56,7 @@ const Sidebar = ({ onClose }) => {
             className="w-16 h-16 rounded-full mb-2 border-2 border-white"
           />
           {user ? (
-            <p className="text-sm text-gray-200">📱 {user.mobile}</p>
+            <p className="text-sm text-gray-200">📱 {user.name}</p>
           ) : (
             <p className="text-sm text-gray-400">Loading...</p>
           )}

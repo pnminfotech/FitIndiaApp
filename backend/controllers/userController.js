@@ -14,6 +14,8 @@ export const getMe = (req, res) => {
   res.json({
     _id: user._id,
     mobile: user.mobile,
+    email: user.email,
+ 
     name: user.name,
     city: user.city,
      gender: user.gender,
@@ -24,9 +26,15 @@ export const getMe = (req, res) => {
 };
 
 export const getAllUsers = async (req, res) => {
-  const users = await User.find();
-  res.json(users);
+  try {
+    // Fetch only users who are not admins
+    const users = await User.find({ role: { $ne: "admin" } });
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 };
+
 
  export const updateMe = async (req, res) => {
     const updates = req.body;
@@ -109,5 +117,28 @@ export const getAvailableSlots = async (req, res) => {
   } catch (err) {
     console.error("Error getting available slots:", err);
     res.status(500).json({ message: "Server error fetching available slots" });
+  }
+};
+
+
+// PATCH /api/users/:id/block
+export const toggleBlockUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    // Prevent admin from blocking themselves or other admins
+    if (user.role === "admin") {
+      return res.status(403).json({ error: "Cannot block admin accounts" });
+    }
+
+    user.blocked = !user.blocked;
+    await user.save();
+
+    res.json({ message: `User has been ${user.blocked ? "blocked" : "unblocked"}.`, user });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to toggle user block status" });
   }
 };

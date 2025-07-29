@@ -25,9 +25,9 @@ const PaymentSuccessPage = () => {
         <div className="bg-white p-10 rounded-xl shadow-2xl text-center max-w-lg w-full border border-gray-200 animate-fade-in">
           {/* XCircle is now correctly imported and used here */}
           <XCircle size={60} className="text-red-500 mx-auto mb-6 opacity-80" />
-          <h2 className="text-3xl font-bold text-gray-800 mb-4">Booking Details Not Found</h2>
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            It seems there was an issue retrieving your booking information. Please check your email or bookings section.
+          <h2 className="text-xl font-bold text-gray-800 mb-4">Booking Details Not Found</h2>
+          <p className="text-sm text-gray-600 mb-8 leading-relaxed">
+            It seems there was an issue retrieving your booking information. Please check your  bookings section.
           </p>
           <button
             onClick={() => navigate("/user/bookings")} // Assuming you have a user bookings page
@@ -63,13 +63,13 @@ const PaymentSuccessPage = () => {
     )}
 
     <div className="relative z-10 bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 max-w-xl w-full text-center border border-green-100 animate-fade-in-up">
-      <CheckCircle size={70} className="text-green-500 mx-auto mb-5 drop-shadow-md" />
+      <CheckCircle size={30} className="text-green-500 mx-auto mb-5 drop-shadow-md" />
       <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-3 tracking-tight leading-snug">
         Payment Successful!
       </h2>
       <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
         Your booking for <strong>{venue?.name}</strong> has been confirmed.
-        A confirmation has been sent to your registered email.
+ 
       </p>
 
       <div className="bg-gray-50 rounded-xl p-5 sm:p-6 mb-6 border border-gray-100 text-left shadow-inner">
@@ -78,20 +78,20 @@ const PaymentSuccessPage = () => {
         </h3>
         <div className="space-y-3 text-sm sm:text-base text-gray-700">
           <p className="flex">
-            <span className="font-semibold w-24 sm:w-28">Venue:</span> <span>{venue?.name}</span>
+            <span className="font-semibold w-24 sm:w-26">Venue:</span> <span>{venue?.name}</span>
           </p>
           <p className="flex">
-            <span className="font-semibold w-24 sm:w-28">Court:</span> <span>{selectedCourt?.courtName}</span>
+            <span className="font-semibold w-24 sm:w-26">Court:</span> <span>{selectedCourt?.courtName}</span>
           </p>
           <p className="flex">
-            <span className="font-semibold w-24 sm:w-28">Date:</span>
+            <span className="font-semibold w-24 sm:w-26">Date:</span>
             <span>{moment(selectedDate).format("dddd, MMMM Do YYYY")}</span>
           </p>
           <p className="flex">
-            <span className="font-semibold w-24 sm:w-28">Sport:</span> <span className="capitalize">{sports}</span>
+            <span className="font-semibold w-24 sm:w-26">Sport:</span> <span className="capitalize">{sports}</span>
           </p>
           <p className="flex items-start">
-            <span className="font-semibold w-24 sm:w-28">Time Slot(s):</span>
+            <span className="font-semibold w-24 sm:w-26">Time Slot(s):</span>
             <span className="flex flex-wrap gap-2">
               {selectedSlots?.map((slot) => (
                 <span
@@ -104,8 +104,8 @@ const PaymentSuccessPage = () => {
               ))}
             </span>
           </p>
-          <p className="flex items-center text-lg font-bold text-gray-900 pt-4 border-t border-gray-200">
-            <IndianRupee size={20} className="mr-2 text-green-600" />
+          <p className="flex items-center text-sm font-bold text-gray-900 pt-4 border-t border-gray-200">
+            <IndianRupee size={18} className="mr-2 text-green-600" />
             <span className="w-28 flex-shrink-0">Amount Paid:</span>
             <span className="text-green-600">₹{totalPrice}</span>
           </p>

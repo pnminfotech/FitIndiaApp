@@ -21,6 +21,24 @@ const BookingList = () => {
         setLoading(false);
       });
   }, []);
+const toggleBlock = async (userId) => {
+  try {
+    const res = await fetch(`http://localhost:8000/api/users/${userId}/block`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await res.json();
+    alert(data.message);
+    setUsers((prev) =>
+      prev.map((u) => (u._id === userId ? { ...u, blocked: !u.blocked } : u))
+    );
+  } catch (err) {
+    alert("Failed to block/unblock user.");
+    console.error(err);
+  }
+};
 
   return (
     <div className="px-4 py-6 overflow-x-auto">
@@ -40,6 +58,7 @@ const BookingList = () => {
               <th className="px-4 py-3 border-b">Gender</th>
               <th className="px-4 py-3 border-b">City</th>
               <th className="px-4 py-3 border-b">Joined Date</th>
+              <th className="px-4 py-3 border-b">block</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +72,17 @@ const BookingList = () => {
                 <td className="px-4 py-3 border-b">
                   {user.createdAt?.split("T")[0]}
                 </td>
+                <td className="px-4 py-3 border-b">
+  <button
+    className={`px-3 py-1 rounded ${
+      user.blocked ? "bg-red-600 text-white" : "bg-green-600 text-white"
+    }`}
+    onClick={() => toggleBlock(user._id)}
+  >
+    {user.blocked ? "Unblock" : "Block"}
+  </button>
+</td>
+
               </tr>
             ))}
           </tbody>
