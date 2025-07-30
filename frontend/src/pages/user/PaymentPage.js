@@ -44,7 +44,6 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
   try {
     const token = localStorage.getItem("token");
 
-    // Make booking request (create the booking now)
     const response = await fetch("http://localhost:8000/api/bookings", {
       method: "POST",
       headers: {
@@ -56,8 +55,7 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
         courtId: bookingData.selectedCourt._id,
         courtName: bookingData.selectedCourt.courtName,
         date: bookingData.selectedDate,
-        startTime: bookingData.selectedSlots[0].startTime,
-        endTime: bookingData.selectedSlots[bookingData.selectedSlots.length - 1].endTime,
+        selectedSlots: bookingData.selectedSlots, // ✅ fixed here
       }),
     });
 
@@ -67,8 +65,9 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
 
     const booked = await response.json();
 
-    // Go to success page
-    navigate("/user/payment-success", { state: { bookingData: { ...bookingData, bookedId: booked._id } } });
+    navigate("/user/payment-success", {
+      state: { bookingData: { ...bookingData, bookedId: booked._id } },
+    });
   } catch (error) {
     console.error("Booking failed:", error);
     alert("Booking failed. Please try again.");
@@ -76,6 +75,7 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
     setIsConfirming(false);
   }
 };
+
 
 
   return (

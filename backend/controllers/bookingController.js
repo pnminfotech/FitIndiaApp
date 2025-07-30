@@ -4,52 +4,75 @@ import Venue from '../models/VenueModel.js';
 import BlockedSlot from '../models/BlockedSlot.js'; // Make sure this is imported
 
 export const createBooking = async (req, res) => {
+  console.log("🧾 Incoming Booking Payload:", req.body);
+
   try {
-    const { venueId, courtId, courtName, date, startTime, endTime } = req.body;
-
-    // ✅ Step 1: Check if slot is already booked (you likely already have this)
-    const alreadyBooked = await Booking.findOne({
-      venueId,
-      courtId,
-      date,
-      startTime,
-      endTime,
-      status: "booked",
-    });
-
-    if (alreadyBooked) {
-      return res.status(400).json({ message: "Slot already booked" });
-    }
-
-    // ✅ Step 2: Check if slot is blocked by admin
-    const isBlocked = await BlockedSlot.findOne({
-      venueId,
-      courtId,
-      date,
-      startTime,
-      endTime,
-    });
-
-    if (isBlocked) {
-      return res.status(400).json({ message: "Slot has been blocked by the admin" });
-    }
-
-    // ✅ Step 3: Proceed to create booking if not blocked
-    const newBooking = await Booking.create({
-      userId: req.user.id, // assuming you’re using auth middleware
+    const {
       venueId,
       courtId,
       courtName,
       date,
-      startTime,
-      endTime,
-      status: "booked",
-    });
+      selectedSlots, // array of slots from frontend
+    } = req.body;
 
-    res.status(201).json(newBooking);
+    const userId = req.user.id;
+    const bookingsToSave = [];
+
+    for (const slot of selectedSlots) {
+      const { startTime, endTime } = slot;
+
+      // Check if slot is already booked
+      const alreadyBooked = await Booking.findOne({
+        venueId,
+        courtId,
+        date,
+        startTime,
+        endTime,
+        status: "booked",
+      });
+
+      if (alreadyBooked) {
+        return res.status(400).json({
+          message: `Slot from ${startTime} to ${endTime} is already booked.`,
+        });
+      }
+
+      // Check if slot is blocked
+      const isBlocked = await BlockedSlot.findOne({
+        venueId,
+        courtId,
+        date,
+        startTime,
+        endTime,
+      });
+
+      if (isBlocked) {
+        return res.status(400).json({
+          message: `Slot from ${startTime} to ${endTime} is blocked by admin.`,
+        });
+      }
+
+      // If not booked or blocked, prepare to save it
+      bookingsToSave.push({
+        userId,
+        venueId,
+        courtId,
+        courtName,
+        date,
+        startTime,
+        endTime,
+        price: slot.price || 0,
+        status: "booked",
+      });
+    }
+
+    // Save all valid bookings in one go
+    const savedBookings = await Booking.insertMany(bookingsToSave);
+
+    res.status(201).json(savedBookings);
   } catch (err) {
     console.error("Booking creation error:", err);
-    res.status(500).json({ message: "Server error while booking slot" });
+    res.status(500).json({ message: "Server error while booking slots" });
   }
 };
 

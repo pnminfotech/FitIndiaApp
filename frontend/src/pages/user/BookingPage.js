@@ -6,12 +6,15 @@ import moment from "moment";
 const BookingPage = () => {
   const { venueId } = useParams();
   const navigate = useNavigate();
+  const today = moment().format("YYYY-MM-DD");
 
   const [venue, setVenue] = useState(null);
   const [selectedCourt, setSelectedCourt] = useState(null);
   const [selectedSport, setSelectedSport] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState(null); // Corrected this line in the previous revision
+  // const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedSlots, setSelectedSlots] = useState([]); // instead of selectedSlot
+
   const [allSlots, setAllSlots] = useState([]);
   const [blockedSlots, setBlockedSlots] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -83,7 +86,7 @@ const BookingPage = () => {
   const handleCourtChange = (court) => {
     setSelectedCourt(court);
     setSelectedSport(court.sports[0] || ""); // Reset sport for the new court
-    setSelectedSlot(null); // Reset selected slot
+    setSelectedSlots([]); // Reset selected slot
     setAllSlots([]); // Clear slots
     setBookings([]); // Clear bookings
     setBlockedSlots([]); // Clear blocked slots
@@ -149,8 +152,8 @@ const BookingPage = () => {
 
   // Handle booking confirmation and navigation
   const handleBookSlot = async () => {
-    if (!selectedCourt || !selectedSlot || !selectedDate || !selectedSport) {
-      alert("Please select a court, sport, date, and time slot to proceed.");
+  if (!selectedCourt || selectedSlots.length === 0 || !selectedDate || !selectedSport) {
+     alert("Please select a court, sport, date, and time slot to proceed.");
       return;
     }
 
@@ -161,14 +164,32 @@ const BookingPage = () => {
           venue,
           selectedDate,
           selectedCourt,
-          selectedSlots: [selectedSlot], // Pass the single selected slot as an array
-          totalPrice: selectedSlot.price || 0,
+        selectedSlots: selectedSlots,
+totalPrice: selectedSlots.reduce((sum, s) => sum + (s.price || 0), 0),
+
           sports: selectedSport,
         },
       },
     });
     setBookingSuccess(true); // This will only briefly show if navigation is slow
   };
+const toggleSlotSelection = (slot) => {
+  const exists = selectedSlots.some(
+    (s) =>
+      s.startTime === slot.startTime &&
+      s.endTime === slot.endTime
+  );
+  if (exists) {
+    setSelectedSlots((prev) =>
+      prev.filter(
+        (s) =>
+          !(s.startTime === slot.startTime && s.endTime === slot.endTime)
+      )
+    );
+  } else {
+    setSelectedSlots((prev) => [...prev, slot]);
+  }
+};
 
   // Loading state UI
   if (loading)
@@ -302,50 +323,63 @@ const BookingPage = () => {
             <CalendarDays size={28} className="text-blue-600" /> Pick a Date
           </h2>
           <div className="flex overflow-x-auto space-x-3 pb-3 custom-scrollbar"> {/* Reduced space-x to space-x-3 */}
-            {dates.map((dateObj, index) => {
-              const formattedDate = dateObj.format("YYYY-MM-DD");
-              const isSelected = selectedDate === formattedDate;
-              const isToday = dateObj.isSame(moment(), "day");
-              const isFirstOfMonth =
-                index === 0 ||
-                dateObj.format("MMMM") !== dates[index - 1].format("MMMM");
+        
+           {dates.map((dateObj, index) => {
+  const formattedDate = dateObj.format("YYYY-MM-DD");
+  const isToday = formattedDate === today;
+  const isSelected = formattedDate === selectedDate;
+  const isFirstOfMonth = dateObj.date() === 1;
 
-              return (
-                <React.Fragment key={index}>
-                  {isFirstOfMonth && (
-                    <div className="flex flex-col items-center justify-center min-w-[60px] sm:min-w-[70px] bg-blue-100 border-l border-blue-200 rounded-l-lg pr-2 py-2 text-xs font-semibold text-blue-800 flex-shrink-0"> {/* Adjusted min-w */}
-                      <span className="uppercase text-center text-sm">
-                        {dateObj.format("MMM")}
-                      </span>
-                      <span className="text-xs">{dateObj.format("YYYY")}</span>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      setSelectedDate(formattedDate);
-                      setSelectedSlot(null);
-                      setBookingSuccess(false);
-                    }}
-                    className={`min-w-[60px] h-20 sm:min-w-[70px] sm:h-24 p-2 rounded-xl border-2 flex flex-col items-center justify-center flex-shrink-0 transition-all duration-200 ease-in-out
-                      ${
-                        isSelected
-                          ? "bg-blue-600 text-white border-blue-600 shadow-md scale-[1.05]"
-                          : "bg-white text-gray-800 border-gray-200 hover:border-blue-300 hover:shadow-sm"
-                      }`}
-                  > {/* Adjusted min-w and h */}
-                    <div className="text-xs font-medium"> {/* Adjusted font size */}
-                      {dateObj.format("ddd")}
-                    </div>
-                    <div className="text-xl sm:text-2xl font-bold"> {/* Adjusted font size */}
-                      {dateObj.format("D")}
-                    </div>
-                    {isToday && ( // FIX: Removed the extra parenthesis here
-                      <div className="text-[10px] mt-1 text-blue-200">Today</div>
-                    )}
-                  </button>
-                </React.Fragment>
-              );
-            })}
+  // ✅ Add this inside the map
+  const dateBookings = (bookings || []).filter(
+    (b) => moment(b.date).format("YYYY-MM-DD") === formattedDate
+  );
+  const dateBlocked = (blockedSlots || []).filter(
+    (b) => moment(b.date).format("YYYY-MM-DD") === formattedDate
+  );
+  const totalSlots = selectedCourt?.slots?.length || 0;
+  const isDateFullyBooked =
+    totalSlots > 0 && (dateBookings.length + dateBlocked.length) >= totalSlots;
+
+  return (
+    <React.Fragment key={index}>
+      {isFirstOfMonth && (
+        <div className="flex flex-col items-center justify-center min-w-[60px] sm:min-w-[70px] bg-blue-100 border-l border-blue-200 rounded-l-lg pr-2 py-2 text-xs font-semibold text-blue-800 flex-shrink-0">
+          <span className="uppercase text-center text-sm">
+            {dateObj.format("MMM")}
+          </span>
+          <span className="text-xs">{dateObj.format("YYYY")}</span>
+        </div>
+      )}
+      <button
+        onClick={() => {
+          if (isDateFullyBooked) return;
+          setSelectedDate(formattedDate);
+          setSelectedSlots([]);
+          setBookingSuccess(false);
+        }}
+        className={`min-w-[60px] h-20 sm:min-w-[70px] sm:h-24 p-2 rounded-xl border-2 flex flex-col items-center justify-center flex-shrink-0 transition-all duration-200 ease-in-out
+          ${
+            isDateFullyBooked
+              ? "bg-gray-300 text-gray-400 border-gray-300 cursor-not-allowed"
+              : isSelected
+              ? "bg-blue-600 text-white border-blue-600 shadow-md scale-[1.05]"
+              : "bg-white text-gray-800 border-gray-200 hover:border-blue-300 hover:shadow-sm"
+          }`}
+      >
+        <div className="text-xs font-medium">{dateObj.format("ddd")}</div>
+        <div className="text-xl sm:text-2xl font-bold">{dateObj.format("D")}</div>
+        {isDateFullyBooked && (
+          <div className="text-[10px] mt-1 text-red-400">Full</div>
+        )}
+        {isToday && !isDateFullyBooked && (
+          <div className="text-[10px] mt-1 text-blue-200">Today</div>
+        )}
+      </button>
+    </React.Fragment>
+  );
+})}
+
           </div>
         </div>
       )}
@@ -360,9 +394,12 @@ const BookingPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
             {allSlots.filter(isSlotAvailable).length > 0 ? (
               allSlots.filter(isSlotAvailable).map((slot, index) => {
-                const isSelected =
-                  selectedSlot?.startTime === slot.startTime &&
-                  selectedSlot?.endTime === slot.endTime;
+                const isSelected = selectedSlots.some(
+  (s) =>
+    s.startTime === slot.startTime &&
+    s.endTime === slot.endTime
+);
+
 
                 return (
                   <button
@@ -373,7 +410,8 @@ const BookingPage = () => {
                           ? "bg-indigo-400 text-white border-indigo-600 shadow-md scale-[1.02]"
                           : "bg-gray-100 text-gray-800 border-gray-200 hover:bg-gray-200 hover:shadow-sm cursor-pointer"
                       }`}
-                    onClick={() => setSelectedSlot(slot)}
+                   onClick={() => toggleSlotSelection(slot)}
+
                   > {/* Reduced padding to p-3 */}
                     <div className="font-semibold text-base"> {/* Reduced font size to text-base */}
                       {moment(slot.startTime, "HH:mm").format("h:mm A")} -{" "}
@@ -402,25 +440,27 @@ const BookingPage = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-white p-4 sm:p-6 border-t border-gray-200 shadow-2xl z-40">
         <div className="max-w-7xl mx-auto flex justify-between items-center flex-col sm:flex-row gap-4">
           <div className="text-center sm:text-left">
-            {selectedSlot ? (
-              <p className="text-lg sm:text-xl font-bold text-gray-900">
-                Total: ₹{selectedSlot.price || 0}{" "}
-                <span className="text-sm font-normal text-gray-600">
-                  (for {moment(selectedSlot.startTime, "HH:mm").format("h:mm A")} - {moment(selectedSlot.endTime, "HH:mm").format("h:mm A")})
-                </span>
-              </p>
-            ) : (
-              <p className="text-lg sm:text-xl font-bold text-gray-700">
-                Select a slot to see price
-              </p>
-            )}
+         {selectedSlots.length > 0 ? (
+  <p className="text-lg sm:text-xl font-bold text-gray-900">
+    Total: ₹{selectedSlots.reduce((sum, s) => sum + (s.price || 0), 0)}{" "}
+    <span className="text-sm font-normal text-gray-600">
+      ({selectedSlots.length} slot{selectedSlots.length > 1 ? "s" : ""} selected)
+    </span>
+  </p>
+) : (
+  <p className="text-lg sm:text-xl font-bold text-gray-700">
+    Select slot(s) to see price
+  </p>
+)}
+
           </div>
           <button
             onClick={handleBookSlot}
-            disabled={!selectedSlot}
+          disabled={selectedSlots.length === 0}
+
             className={`w-full sm:w-auto px-8 py-3 rounded-lg shadow-lg font-semibold text-base sm:text-lg transition duration-300 ease-in-out transform active:scale-95
               ${
-                selectedSlot
+                selectedSlots
                   ? "bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
                   : "bg-gray-300 text-gray-600 cursor-not-allowed"
               }`}
@@ -438,7 +478,7 @@ const BookingPage = () => {
       )}
 
       {/* Global Scrollbar Style (add this to your main CSS file or index.css) */}
-      <style jsx>{`
+      <style>{`
         .custom-scrollbar::-webkit-scrollbar {
           height: 8px; /* For horizontal scrollbars */
           width: 8px; /* For vertical scrollbars */
