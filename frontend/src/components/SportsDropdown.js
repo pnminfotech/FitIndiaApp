@@ -38,7 +38,7 @@ function SportsDropdown() {
       {/* Dropdown Button */}
       <button
         onClick={toggleDropdown}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-blue-500 bg-white text-sm font-medium shadow-sm hover:bg-gray-50"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-orange-500 bg-white text-sm font-medium shadow-sm hover:bg-gray-50"
       >
         Sports <FaChevronDown className="ml-2 mt-0.5" />
       </button>
@@ -61,7 +61,7 @@ function SportsDropdown() {
                   onChange={() => handleSelect(sport)}
                   className="form-checkbox h-4 w-4 text-green-600 border-gray-300 rounded"
                 />
-                <span className="text-sm text-blue-500 font-medium">{sport}</span>
+                <span className="text-sm text-orange-500 font-medium">{sport}</span>
               </label>
             ))}
           </div>

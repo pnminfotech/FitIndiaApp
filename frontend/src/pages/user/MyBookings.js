@@ -36,7 +36,7 @@ const MyBookings = () => {
     const fetchBookings = async () => {
       setLoading(true); // Ensure loading is true when fetching
       try {
-        const res = await fetch("http://localhost:8000/api/bookings/mybookings", {
+        const res = await fetch("https://api.getfitindia.in/api/bookings/mybookings", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -86,7 +86,7 @@ const MyBookings = () => {
     if (!confirmCancellation) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/bookings/cancel/${id}`, {
+      const res = await fetch(`https://api.getfitindia.in/api/bookings/cancel/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -121,11 +121,11 @@ const MyBookings = () => {
       statusText = "Confirmed";
       statusIcon = <CheckCircle size={18} />;
     } else if (booking.status === "cancelled") {
-      statusColor = "text-red-600";
+      statusColor = "text-orange-600";
       statusText = "Cancelled";
       statusIcon = <XCircle size={18} />;
     } else if (booking.status === "completed") {
-      statusColor = "text-blue-600"; // Or gray/purple
+      statusColor = "text-orange-600"; // Or gray/purple
       statusText = "Completed";
       statusIcon = <History size={18} />;
     } else {
@@ -138,25 +138,25 @@ const MyBookings = () => {
       <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col md:flex-row items-start md:items-center p-6 space-y-4 md:space-y-0 md:space-x-6 border border-gray-100">
         {/* Left Section: Details */}
         <div className="flex-grow space-y-2">
-          <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            <Building size={22} className="text-blue-800" />
+          <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
+            <Building size={22} className="text-orange-700" />
             {booking.venueId?.name || "Unknown Venue"}
           </h3>
           <div className="text-gray-600 text-sm grid grid-cols-1 sm:grid-cols-2 gap-2">
             <p className="flex items-center gap-2">
-              <MapPin size={16} className="text-blue-800" />
+              <MapPin size={16} className="text-orange-700" />
               Court: <span className="font-semibold">{booking.courtName}</span>
             </p>
             <p className="flex items-center gap-2">
-              <CalendarDays size={16} className="text-blue-800" />
+              <CalendarDays size={16} className="text-orange-700" />
               Date: <span className="font-semibold">{formattedDate}</span>
             </p>
             <p className="flex items-center gap-2">
-              <Clock size={16} className="text-blue-800" />
+              <Clock size={16} className="text-orange-700" />
               Time: <span className="font-semibold">{formattedTime}</span>
             </p>
             <p className="flex items-center gap-2">
-              <Activity size={16} className="text-blue-800" />
+              <Activity size={16} className="text-orange-700" />
               Sport: <span className="font-semibold capitalize">{booking.sports}</span>
             </p>
             
@@ -171,7 +171,7 @@ const MyBookings = () => {
           {isCancelable && (
             <button
               onClick={() => cancelBooking(booking._id)}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-red-700 transition-colors duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-orange-700 transition-colors duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-75"
             >
               <XCircle size={18} /> Cancel Booking
             </button>
@@ -186,7 +186,7 @@ const MyBookings = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center font-sans p-6">
         <div className="flex flex-col items-center p-8 bg-white rounded-xl shadow-xl border border-gray-200">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-orange-500 mb-4"></div>
           <p className="text-xl font-medium text-gray-700">Loading your bookings...</p>
           <p className="text-md text-gray-500 mt-2">Please wait a moment.</p>
         </div>
@@ -201,7 +201,7 @@ const MyBookings = () => {
  <div className="fixed top-4 left-4 z-[1003]">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="p-3 bg-white rounded-full shadow-lg text-blue-700 hover:bg-blue-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="p-3 bg-white rounded-full shadow-lg text-orange-600 hover:bg-orange-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
           aria-label="Open sidebar"
         >
           <FaBars className="text-xl" />
@@ -215,7 +215,7 @@ const MyBookings = () => {
       <div className="absolute top-4 right-4 z-[1002] sm:top-6 sm:right-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-blue-600 hover:bg-blue-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-orange-600 hover:bg-orange-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
         >
           <svg
             className="w-5 h-5"
@@ -238,8 +238,8 @@ const MyBookings = () => {
 
         <div className="flex-1 p-6 sm:p-8 md:p-10 max-w-7xl mx-auto w-full mt-16 md:mt-0"> {/* Adjusted top margin for header/sidebar toggle */}
           <div className="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 border border-gray-200">
-            <h2 className="text-4xl font-extrabold text-gray-900 mb-8 flex items-center gap-4">
-              <ListTodo size={40} className="text-blue-600" /> Your Bookings
+            <h2 className="text-sm md:text-md lg:text-lg font-extrabold text-gray-900 mb-8 flex items-center gap-4">
+              <ListTodo size={40} className="text-orange-600" /> Your Bookings
             </h2>
 
             {/* Tab Navigation */}
@@ -250,7 +250,7 @@ const MyBookings = () => {
     className={`w-full sm:w-auto px-4 py-3 rounded-xl text-base font-semibold transition-all duration-300 ease-in-out shadow-sm
       ${
         activeTab === "upcoming"
-          ? "bg-blue-600 text-white shadow-md hover:bg-blue-700"
+          ? "bg-orange-600 text-white shadow-md hover:bg-orange-700"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
   >
@@ -263,7 +263,7 @@ const MyBookings = () => {
     className={`w-full sm:w-auto px-4 py-3 rounded-xl text-base font-semibold transition-all duration-300 ease-in-out shadow-sm
       ${
         activeTab === "previous"
-          ? "bg-blue-600 text-white shadow-md hover:bg-blue-700"
+          ? "bg-orange-600 text-white shadow-md hover:bg-orange-700"
           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
       }`}
   >
@@ -284,7 +284,7 @@ const MyBookings = () => {
                       <p className="text-xl font-medium mb-2">No Upcoming Bookings</p>
                       <p className="text-md">
                         Looks like your schedule is free! Head to the{" "}
-                        <button onClick={() => alert("Navigate to venues page")} className="text-blue-600 hover:underline font-semibold">
+                        <button onClick={() => alert("Navigate to venues page")} className="text-orange-600 hover:underline font-semibold">
                           Venues
                         </button>{" "}
                         page to book your next slot.

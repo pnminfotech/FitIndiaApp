@@ -12,7 +12,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
 
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/users/me", {
+        const res = await fetch("https://api.getfitindia.in/api/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -34,7 +34,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8000/api/users/me", {
+      const res = await fetch("https://api.getfitindia.in/api/users/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

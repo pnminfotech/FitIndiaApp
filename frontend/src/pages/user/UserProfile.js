@@ -23,7 +23,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/users/me", {
+        const res = await fetch("https://api.getfitindia.in/api/users/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -48,7 +48,7 @@ const UserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8000/api/users/me", {
+      const res = await fetch("https://api.getfitindia.in/api/users/me", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const UserProfile = () => {
       async (position) => {
         const { latitude, longitude } = position.coords;
         try {
-          await fetch("http://localhost:8000/api/users/location", {
+          await fetch("https://api.getfitindia.in/api/users/location", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const UserProfile = () => {
       <div className="fixed top-4 left-4 z-[1003]">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="text-2xl text-blue-700 hover:text-blue-900 transition duration-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-2xl text-orange-600 hover:text-blue-900 transition duration-300 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <FaBars />
         </button>
@@ -159,7 +159,7 @@ const UserProfile = () => {
               </span>
             </p>
             {coords && (
-              <p className="mt-2 text-xs text-blue-700">
+              <p className="mt-2 text-xs text-orange-600">
                 📍 Lat: {coords.latitude.toFixed(4)} | Lng: {coords.longitude.toFixed(4)}
               </p>
             )}

@@ -26,7 +26,7 @@ const PaymentPage = () => {
           </p>
           <button
             onClick={() => navigate("/user/venues")}
-            className="inline-flex items-center justify-center px-8 py-4 bg-blue-700 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-75"
+            className="inline-flex items-center justify-center px-8 py-4 bg-orange-700 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-orange-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-75"
           >
             <ArrowLeft size={22} className="mr-3" /> Explore Venues
           </button>
@@ -44,7 +44,7 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
   try {
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:8000/api/bookings", {
+    const response = await fetch("https://api.getfitindia.in/api/bookings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,29 +79,44 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-6 sm:p-8 lg:p-10 font-sans text-gray-800">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-10 pb-5 border-b border-gray-200">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 hover:text-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-md p-2"
-        >
-          <ArrowLeft size={22} />
-          <span className="text-lg font-medium hidden sm:block">Back</span>
-        </button>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-2 text-center flex-grow tracking-tight">
-          Confirm & Pay
-        </h1>
-        <div className="w-10 sm:w-auto"></div> {/* Spacer for alignment */}
-      </div>
+ <div className="min-h-screen bg-white mt-20 md:mt-0 md:pt-20 pb-32 px-4 sm:px-6 lg:px-8 font-sans">
+
+
+
+      {/* Header with Venue Name and Back Button */}
+     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-gray-200 px-4 py-3 sm:px-8 flex items-center justify-between">
+  {/* Left: Back Button */}
+  <button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 px-3 py-1 rounded-full bg-white text-orange-600 hover:bg-orange-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+  >
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+   
+  </button>
+
+  {/* Center: Venue Name */}
+  <h1 className="text-lg sm:text-2xl font-extrabold text-gray-800 text-center flex-grow mx-4">
+   confirm & Pay
+  </h1>
+
+  
+</div>
 
      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
   {/* Payment QR Code Section - Left Panel */}
   <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 animate-fade-in-up">
-    <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3 sm:gap-4">
-      <CreditCard size={28} className="text-blue-600 opacity-90" /> Payment Details
+    <h2 className="text-sm sm:text-sm font-bold text-gray-800 mb-6 flex items-center gap-3 sm:gap-4">
+      <CreditCard size={18} className="text-orange-600 opacity-90" /> Payment Details
     </h2>
-    <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+    <p className="text-sm sm:text-sm text-gray-600 mb-6 leading-relaxed">
       Scan the QR code below using your preferred UPI application to complete the transaction.
     </p>
 
@@ -116,17 +131,17 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
       </div>
     </div>
 
-    {/* <div className="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-100 shadow-sm mb-6">
-      <p className="text-lg sm:text-xl font-bold text-blue-800 flex items-center gap-2">
-        <Wallet size={22} className="text-blue-600" /> Total Amount:
+    {/* <div className="flex items-center justify-between bg-orange-50 p-3 rounded-lg border border-orange-100 shadow-sm mb-6">
+      <p className="text-lg sm:text-xl font-bold text-orange-600 flex items-center gap-2">
+        <Wallet size={22} className="text-orange-600" /> Total Amount:
       </p>
-      <p className="text-2xl sm:text-3xl font-extrabold text-blue-700">
+      <p className="text-2xl sm:text-3xl font-extrabold text-orange-600">
         ₹{totalPrice}
       </p>
     </div> */}
 
     <p className="text-sm text-gray-500 flex items-start gap-2 leading-tight">
-      <Info size={18} className="text-blue-400 opacity-80 flex-shrink-0 mt-1" />
+      <Info size={18} className="text-orange-400 opacity-80 flex-shrink-0 mt-1" />
       <span>
         Ensure the payment is made from the mobile number registered with your account for seamless verification.
       </span>
@@ -137,7 +152,7 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
         href="https://www.npci.org.in/what-we-do/upi/product-overview"
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-500 hover:underline"
+        className="text-orange-500 hover:underline"
       >
         Learn more about UPI payments.
       </a>
@@ -146,29 +161,29 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
 
   {/* Booking Summary Section - Right Panel */}
   <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-gray-100 animate-fade-in-up delay-100">
-    <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3 sm:gap-4">
-      <CheckCircle size={28} className="text-blue-800 opacity-90" /> Booking Overview
+    <h3 className="text-md sm:text-md font-bold text-gray-800 mb-6 flex items-center gap-3 sm:gap-4">
+      <CheckCircle size={18} className="text-orange-600 opacity-90" /> Booking Overview
     </h3>
     <div className="space-y-5 text-gray-700">
       <div className="flex items-start sm:items-center">
-        <Building size={22} className="text-blue-700 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
+        <Building size={22} className="text-orange-600 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
         <div>
           <p className="text-sm text-gray-500">Venue</p>
-          <p className="text-lg font-semibold">{venue.name}</p>
+          <p className="text-sm font-semibold">{venue.name}</p>
           <p className="text-sm text-gray-600">{venue.address}</p>
         </div>
       </div>
 
       <div className="flex items-start sm:items-center">
-        <CalendarDays size={22} className="text-blue-800 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
+        <CalendarDays size={22} className="text-orange-600 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
         <div>
           <p className="text-sm text-gray-500">Date</p>
-          <p className="text-lg font-semibold">{moment(selectedDate).format("dddd, MMMM Do YYYY")}</p>
+          <p className="text-sm font-semibold">{moment(selectedDate).format("dddd, MMMM Do YYYY")}</p>
         </div>
       </div>
 
       <div className="flex items-start sm:items-center">
-        <Clock size={22} className="text-blue-800 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
+        <Clock size={22} className="text-orange-600 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
         <div>
           <p className="text-sm text-gray-500">Time Slot(s)</p>
           <div className="flex flex-wrap gap-2 mt-1">
@@ -185,18 +200,18 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
       </div>
 
       <div className="flex items-start sm:items-center">
-        <Dribbble size={22} className="text-blue-800 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
+        <Dribbble size={22} className="text-orange-600 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
         <div>
           <p className="text-sm text-gray-500">Sport</p>
-          <p className="text-lg font-semibold capitalize">{sports}</p>
+          <p className="text-sm font-semibold capitalize">{sports}</p>
         </div>
       </div>
 
       <div className="flex items-start sm:items-center">
-        <Building size={22} className="text-blue-800 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
+        <Building size={22} className="text-orange-600 mr-4 flex-shrink-0 mt-1 sm:mt-0" />
         <div>
           <p className="text-sm text-gray-500">Court</p>
-          <p className="text-lg font-semibold">{selectedCourt.courtName}</p>
+          <p className="text-sm font-semibold">{selectedCourt.courtName}</p>
         </div>
       </div>
     </div>
@@ -204,11 +219,11 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
 </div>
 
       {/* Fixed Bottom Bar for Confirm Payment Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200 shadow-2xl z-40">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-baseline text-gray-700">
+      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 sm:p-6 border-t border-gray-200 shadow-2xl z-40">
+        <div className="max-w-7xl mx-auto flex justify-between items-center flex-col sm:flex-row gap-4">   
+           <div className="flex items-baseline text-gray-700">
             <span className="text-sm font-medium mr-2">Total Payable:</span>
-            <span className="text-2xl font-extrabold text-blue-700">₹{totalPrice}</span>
+            <span className="text-2xl font-extrabold text-orange-600">₹{totalPrice}</span>
           </div>
 
           <button
@@ -218,7 +233,7 @@ const totalPrice = bookingData.totalPrice || 0; // fallback in case totalPrice i
             ${
               isConfirming
                 ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                : "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500"
+                : "bg-orange-600 text-white hover:bg-orange-700 focus:ring-orange-500"
             }`}
           >
             {isConfirming ? (

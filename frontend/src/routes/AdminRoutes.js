@@ -1,5 +1,4 @@
-// AdminRoutes.jsx
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import AdminLayout from '../layouts/AdminLayout';
 import Dashboard from '../pages/admin/Dashboard';
 import VenueList from '../pages/admin/VenueList';
@@ -12,26 +11,39 @@ import ManageAddBlockSlots from '../pages/admin/ManageAddBlockSlots';
 import AdminLogin from '../pages/admin/AdminLogin';
 import AllBookings from '../pages/admin/AllBookings';
 
-
 export default function AdminRoutes() {
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
+  const isAuthenticated = !!token && role === "admin";
+  const location = useLocation();
+
   return (
     <Routes>
-       <Route path="/" element={<AdminLogin />} />
-      <Route element={<AdminLayout />}>
-      
-        <Route path="dashboard" element={<Dashboard />} />
-      
-        <Route path="venues" element={<VenueList />} />
-        <Route path="venues/add" element={<AddVenue />} />
-        <Route path="coaches" element={<CoachList />} />
-        <Route path="bookings" element={<BookingList />} /> 
-         <Route path="manage" element={<ManageAddBlockSlots/>} />
-           <Route path="allbookings" element={<AllBookings />} />
-      
-      </Route>
-  <Route path="blockslot" element={<BlockSlotsAdmin/>} />
-      <Route path="slots" element={<ManageSlots />} />
-         
+      {/* ✅ Public Admin Login Route */}
+      <Route path="/" element={<AdminLogin />} />
+
+      {/* ✅ Protected Admin Routes */}
+      {isAuthenticated ? (
+        <>
+          <Route element={<AdminLayout />}>
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="venues" element={<VenueList />} />
+            <Route path="venues/add" element={<AddVenue />} />
+            <Route path="coaches" element={<CoachList />} />
+            <Route path="bookings" element={<BookingList />} />
+            <Route path="manage" element={<ManageAddBlockSlots />} />
+            <Route path="allbookings" element={<AllBookings />} />
+          </Route>
+          <Route path="blockslot" element={<BlockSlotsAdmin />} />
+          <Route path="slots" element={<ManageSlots />} />
+        </>
+      ) : (
+        // 🚫 Redirect if not authenticated and trying to access anything except /
+        <Route
+          path="*"
+          element={<Navigate to="/admin" state={{ from: location }} />}
+        />
+      )}
     </Routes>
   );
 }

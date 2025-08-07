@@ -19,7 +19,7 @@ const [selectedMonth, setSelectedMonth] = useState("");
 
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/venues")
+    fetch("https://api.getfitindia.in/api/venues")
       .then((res) => res.json())
       .then(setVenues)
       .catch(console.error);
@@ -37,11 +37,11 @@ const [selectedMonth, setSelectedMonth] = useState("");
     if (!selectedCourt || !selectedDate) return;
     const fetchSlots = async () => {
       try {
-        const slotRes = await fetch(`http://localhost:8000/api/slots/${selectedVenue}/${selectedCourt._id}/slots`);
+        const slotRes = await fetch(`https://api.getfitindia.in/api/slots/${selectedVenue}/${selectedCourt._id}/slots`);
         const slotsData = await slotRes.json();
         setAvailableSlots(slotsData || []);
 
-        const blockedRes = await fetch(`http://localhost:8000/api/block/${selectedVenue}/${selectedCourt._id}?date=${selectedDate}`);
+        const blockedRes = await fetch(`https://api.getfitindia.in/api/block/${selectedVenue}/${selectedCourt._id}?date=${selectedDate}`);
         const blockedData = await blockedRes.json();
         setBlockedSlots(blockedData || []);
       } catch (err) {
@@ -53,7 +53,7 @@ const [selectedMonth, setSelectedMonth] = useState("");
 
 const fetchGlobalBlockedSlots = async () => {
   try {
-    const res = await fetch("http://localhost:8000/api/block/blocked");
+    const res = await fetch("https://api.getfitindia.in/api/block/blocked");
 
     // Destructure response expecting object with dailyBlocked and monthlyBlocked arrays
     const { dailyBlocked = [], monthlyBlocked = [] } = await res.json();
@@ -93,7 +93,7 @@ const fetchGlobalBlockedSlots = async () => {
       return alert("Please select court, date, and slots to block.");
     }
     try {
-      const res = await fetch("http://localhost:8000/api/block", {
+      const res = await fetch("https://api.getfitindia.in/api/block", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +129,7 @@ const fetchGlobalBlockedSlots = async () => {
     const month = new Date(selectedDate).getMonth() + 1;
 
     try {
-      const res = await fetch("http://localhost:8000/api/block/bulk", {
+      const res = await fetch("https://api.getfitindia.in/api/block/bulk", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -166,7 +166,7 @@ const handleUnblockFullMonth = async () => {
   if (!confirm) return;
 
   try {
-    const res = await fetch("http://localhost:8000/api/block/unblock-month", {
+    const res = await fetch("https://api.getfitindia.in/api/block/unblock-month", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -200,7 +200,7 @@ const handleUnblockFullMonth = async () => {
     if (!confirm) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/block/${slotId}`, {
+      const res = await fetch(`https://api.getfitindia.in/api/block/${slotId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

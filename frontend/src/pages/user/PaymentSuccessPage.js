@@ -31,7 +31,7 @@ const PaymentSuccessPage = () => {
           </p>
           <button
             onClick={() => navigate("/user/bookings")} // Assuming you have a user bookings page
-            className="inline-flex items-center justify-center px-8 py-4 bg-blue-700 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-75"
+            className="inline-flex items-center justify-center px-8 py-4 bg-orange-700 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-orange-800 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-75"
           >
             <Home size={22} className="mr-3" /> Go to My Bookings
           </button>
@@ -43,7 +43,7 @@ const PaymentSuccessPage = () => {
   const { venue, selectedDate, selectedCourt, selectedSlots, totalPrice, sports } = bookingData;
 
  return (
-  <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex flex-col justify-center items-center px-4 py-6 sm:py-10 font-sans">
+  <div className="min-h-screen bg-gradient-to-br from-orange-50 to-indigo-50 flex flex-col justify-center items-center px-4 py-6 sm:py-10 font-sans">
     {/* Confetti */}
     {showConfetti && (
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -64,17 +64,17 @@ const PaymentSuccessPage = () => {
 
     <div className="relative z-10 bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 max-w-xl w-full text-center border border-green-100 animate-fade-in-up">
       <CheckCircle size={30} className="text-green-500 mx-auto mb-5 drop-shadow-md" />
-      <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-3 tracking-tight leading-snug">
+      <h2 className="text-sm sm:text-4xl font-extrabold text-gray-800 mb-3 tracking-tight leading-snug">
         Payment Successful!
       </h2>
-      <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+      <p className="text-base sm:text-sm text-gray-600 mb-6 leading-relaxed">
         Your booking for <strong>{venue?.name}</strong> has been confirmed.
  
       </p>
 
       <div className="bg-gray-50 rounded-xl p-5 sm:p-6 mb-6 border border-gray-100 text-left shadow-inner">
-        <h3 className="text-lg sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3 border-gray-200 flex items-center gap-3">
-          <Building size={22} className="text-blue-500" /> Booking Details
+        <h3 className="text-sm sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3 border-gray-200 flex items-center gap-3">
+          <Building size={22} className="text-orange-500" /> Booking Details
         </h3>
         <div className="space-y-3 text-sm sm:text-base text-gray-700">
           <p className="flex">
@@ -96,7 +96,7 @@ const PaymentSuccessPage = () => {
               {selectedSlots?.map((slot) => (
                 <span
                   key={slot._id || `${slot.startTime}-${slot.endTime}`}
-                  className="bg-blue-100 text-blue-800 text-xs sm:text-sm px-2 py-1 rounded-full font-medium"
+                  className="bg-orange-100 text-orange-800 text-xs sm:text-sm px-2 py-1 rounded-full font-medium"
                 >
                   {moment(slot.startTime, "HH:mm").format("h:mm A")} -{" "}
                   {moment(slot.endTime, "HH:mm").format("h:mm A")}
@@ -116,7 +116,7 @@ const PaymentSuccessPage = () => {
       <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
         <button
           onClick={() => navigate("/")}
-          className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-blue-700 text-white font-semibold text-base rounded-lg shadow-md hover:bg-blue-800 transition-all duration-300"
+          className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-orange-700 text-white font-semibold text-base rounded-lg shadow-md hover:bg-orange-800 transition-all duration-300"
         >
           <Home size={20} className="mr-2" /> Home
         </button>

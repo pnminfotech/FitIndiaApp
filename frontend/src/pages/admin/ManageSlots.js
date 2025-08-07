@@ -13,7 +13,7 @@ function ManageSlots() {
   const [editCourtId, setEditCourtId] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/venues")
+    fetch("https://api.getfitindia.in/api/venues")
       .then((res) => res.json())
       .then((data) => setVenues(data));
   }, []);
@@ -23,7 +23,7 @@ function ManageSlots() {
       const venue = venues.find((v) => v._id === selectedVenue);
       if (venue) setVenueSports(venue.sports || []);
 
-      fetch(`http://localhost:8000/api/slots/${selectedVenue}/courts`)
+      fetch(`https://api.getfitindia.in/api/slots/${selectedVenue}/courts`)
         .then((res) => res.json())
         .then(setCourts);
     }
@@ -112,8 +112,8 @@ const formatTime = (timeStr) => {
 
     const method = editCourtId ? "PUT" : "POST";
     const url = editCourtId
-      ? `http://localhost:8000/api/slots/${selectedVenue}/courts/${editCourtId}`
-      : `http://localhost:8000/api/slots/${selectedVenue}/courts`;
+      ? `https://api.getfitindia.in/api/slots/${selectedVenue}/courts/${editCourtId}`
+      : `https://api.getfitindia.in/api/slots/${selectedVenue}/courts`;
 
     const res = await fetch(url, {
       method,
@@ -125,7 +125,7 @@ const formatTime = (timeStr) => {
       alert(`Court ${editCourtId ? "updated" : "added"} successfully`);
       resetForm();
       const updated = await fetch(
-        `http://localhost:8000/api/slots/${selectedVenue}/courts`
+        `https://api.getfitindia.in/api/slots/${selectedVenue}/courts`
       ).then((r) => r.json());
       setCourts(updated);
     } else {
@@ -143,7 +143,7 @@ const formatTime = (timeStr) => {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this court?")) return;
     const res = await fetch(
-      `http://localhost:8000/api/slots/${selectedVenue}/courts/${id}`,
+      `https://api.getfitindia.in/api/slots/${selectedVenue}/courts/${id}`,
       { method: "DELETE" }
     );
     if (res.ok) {

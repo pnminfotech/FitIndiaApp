@@ -9,7 +9,7 @@ function Dashboard() {
   useEffect(()=>{
     const fetchVenues = async ()=>{
       try {
-        const res = await fetch('http://localhost:8000/api/venues');
+        const res = await fetch('https://api.getfitindia.in/api/venues');
         const data = await res.json();
         setVenuesCount(data.length);
       } catch (error) {

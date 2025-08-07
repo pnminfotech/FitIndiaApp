@@ -38,7 +38,7 @@ function Rought() {
   const googleFormUrl = "https://forms.gle/ph5DXNoyDCCqKj6N9";
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/venues")
+    fetch("https://api.getfitindia.in/api/venues")
       .then((res) => res.json())
       .then((data) => {
         setVenues(data);
@@ -378,7 +378,7 @@ function Rought() {
                 key={index}
                 garden={{
                   ...venue,
-                  image: `http://localhost:8000/uploads/${venue.image}`,
+                  image: `https://api.getfitindia.in/uploads/${venue.image}`,
                 }}
               />
             ))

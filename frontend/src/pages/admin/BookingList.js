@@ -6,7 +6,7 @@ const BookingList = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/users", {
+    fetch("https://api.getfitindia.in/api/users", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -23,7 +23,7 @@ const BookingList = () => {
   }, []);
 const toggleBlock = async (userId) => {
   try {
-    const res = await fetch(`http://localhost:8000/api/users/${userId}/block`, {
+    const res = await fetch(`https://api.getfitindia.in/api/users/${userId}/block`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

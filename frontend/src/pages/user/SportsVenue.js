@@ -30,7 +30,7 @@ function SportsVenue() {
 
   const fetchVenues = async () => {
     try {
-      const res = await fetch("http://localhost:8000/api/venues");
+      const res = await fetch("https://api.getfitindia.in/api/venues");
       const data = await res.json();
       setVenues(data);
       setFilteredVenues(data);
@@ -102,21 +102,21 @@ function SportsVenue() {
       {showSidebar && <Sidebar onClose={() => setShowSidebar(false)} />}
 
       {/* Filters Section */}
-      <section className="pt-12 px-[13px] sm:px-[100px]">
+      <section className="pt-5 lg:pt-10 px-[1px] sm:px-[70px]">
         <div className="flex justify-between items-center">
           <h1 className="text-xs font-bold">
             AVAILABLE VENUES{" "}
             <span className="text-gray-500">({filteredVenues.length})</span>
           </h1>
-          <button className="text-blue-800 font-semibold text-lg border-none flex items-center gap-2">
+          <button className="text-gray-400 font-semibold text-sm border-none flex items-center gap-2">
             <FaFilter />
             FILTER
           </button>
         </div>
 
-        <div className="flex items-center gap-4 pt-6 flex-wrap">
+        <div className="flex items-center gap-4 pt-2 lg:pt-6 flex-wrap">
           {/* 📅 Date Picker */}
-          <DateButtonWithPicker className="text-blue-800"
+          <DateButtonWithPicker className="text-orange-500"
             onDateChange={(date) => {
               const formatted = date.toLocaleDateString("default", {
                 month: "long",
@@ -131,11 +131,11 @@ function SportsVenue() {
           <hr className="h-[40px] border-l border-gray-300" />
 
           {/* Amenities */}
-          <Dropdown
+          <Dropdown style={{}}
             label="Amenities"
             options={uniqueAmenities}
             selected={selectedAmenity}
-            onChange={setSelectedAmenity}
+            onChange={setSelectedAmenity} className="text-orange-600 "
           />
 
           {/* Sports */}
@@ -159,20 +159,26 @@ function SportsVenue() {
       {/* Venue Cards */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[13px] sm:px-[100px] py-10">
         {loading ? (
-          <p>Loading venues...</p>
-        ) : filteredVenues.length > 0 ? (
-          filteredVenues.map((venue, index) => (
-            <SportsGardens
-              key={index}
-              garden={{
-                ...venue,
-                image: `http://localhost:8000/uploads/${venue.image}`,
-              }}
-            />
-          ))
-        ) : (
-          <p>No venues found.</p>
-        )}
+  <p>Loading venues...</p>
+) : filteredVenues.length === 0 ? (
+  <p>No venues found.</p>
+) : (
+  filteredVenues.slice(0, 8).map((venue, index, arr) => (
+    <div key={index} className="w-full">
+      <SportsGardens
+        garden={{
+          ...venue,
+          image: `https://api.getfitindia.in/uploads/${venue.image}`,
+        }}
+      />
+      {/* Only show separator if not the last item */}
+      {index !== arr.length - 1 && (
+        <div className="h-[1px] bg-gray-300 my-4 w-full col-span-full" />
+      )}
+    </div>
+  ))
+)}
+
       </section>
     </main>
   );

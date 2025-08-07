@@ -14,6 +14,7 @@ import BookingConfirmationPage from "../pages/user/BookingConfirmationPage";
 import PaymentPage from "../pages/user/PaymentPage";
 import PaymentSuccessPage from "../pages/user/PaymentSuccessPage";
 import Rought from "../pages/user/Rough";
+import UserProtectedRoute from "../components/UserProtectedRoute"; // import it
 
 export default function UserRoutes() {
   const token = localStorage.getItem("token");
@@ -21,21 +22,18 @@ export default function UserRoutes() {
   const isAuthenticated = !!token;
   const location = useLocation();
 
-  // Redirect admins away
-  if (role === "admin") {
-    return <Navigate to="/admin/dashboard" />;
-  }
-
   return (
     <Routes>
-      {/* ✅ Default route redirects to homepage */}
+      {/* Default redirect */}
       <Route path="/" element={<Navigate to="/user/homepage" />} />
 
-      {/* ✅ Login route is always accessible */}
+      {/* ✅ Login Route */}
       <Route
         path="login"
         element={
-          isAuthenticated ? (
+          role === "admin" ? (
+            <Navigate to="/admin/dashboard" />
+          ) : isAuthenticated ? (
             <Navigate to="/user/homepage" />
           ) : (
             <Login />
@@ -44,104 +42,95 @@ export default function UserRoutes() {
       />
 
       {/* ✅ Public Pages */}
-       
-      <Route path="homepage" element={<Homepage />} />
+      <Route
+        path="homepage"
+        element={
+          role === "admin" ? (
+            <Navigate to="/admin/dashboard" />
+          ) : (
+            <Homepage />
+          )
+        }
+      />
       <Route path="sportsvenue" element={<SportsVenue />} />
       <Route path="coach" element={<CoachFormPage />} />
       <Route path="rough" element={<Rought />} />
       <Route path="venue/:id" element={<VenueDetails />} />
 
-      {/* 🔐 Protected Pages - only accessible if logged in */}
+      {/* ✅ Protected Routes (Wrapped) */}
       <Route
         path="profile"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <UserProfile />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="coaching"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <Coaching />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="events"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <Events />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="userdashboard"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <UserDashboard />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="booking/:venueId"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <BookingPage />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="mybookings"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <MyBookings />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="booking-confirmation"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <BookingConfirmationPage />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="payment"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <PaymentPage />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
       <Route
         path="payment-success"
         element={
-          isAuthenticated ? (
+          <UserProtectedRoute>
             <PaymentSuccessPage />
-          ) : (
-            <Navigate to="/user/login" state={{ from: location }} />
-          )
+          </UserProtectedRoute>
         }
       />
     </Routes>
   );
 }
+ 

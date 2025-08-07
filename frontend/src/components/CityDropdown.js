@@ -27,7 +27,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
       {/* Always show "Select City" on button */}
       <button
         onClick={toggleDropdown}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-blue-800 bg-white text-sm font-medium shadow-sm hover:bg-gray-50"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-orange-600 bg-white  font-medium shadow-sm hover:bg-gray-50 text-[10px] sm:text-[10px] md:text-[12px] lg:text-sm"
       >
         Select City <FaChevronDown className="ml-2 mt-0.5" />
       </button>
@@ -36,12 +36,12 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
       {isOpen && (
         <div className="absolute z-50 mt-2 w-56 max-h-72 overflow-y-auto bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
           <div className="p-2">
-            <p className="text-gray-400 text-sm font-semibold px-2 pb-2">Choose a City</p>
+            <p className="text-gray-400 text-[10px] sm:text-[10px] md:text-[13px] lg:text-sm font-semibold px-2 pb-2">Choose a City</p>
 
             {/* All Cities option */}
             <div
               onClick={() => handleSelect("All Cities")}
-              className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-800 font-medium transition-colors ${
+              className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-[12px] sm:text-[12px] md:text-[13px] lg:text-sm text-orange-600 font-medium transition-colors ${
                 selectedCity === "All Cities" ? "bg-green-50" : ""
               }`}
             >
@@ -53,7 +53,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
               <div
                 key={index}
                 onClick={() => handleSelect(city)}
-                className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-sm text-blue-800 font-medium transition-colors ${
+                className={`px-3 py-2 cursor-pointer rounded hover:bg-gray-100 text-[12px] sm:text-[12px] md:text-[13px] lg:text-sm text-orange-600 font-medium transition-colors ${
                   selectedCity === city ? "bg-green-50" : ""
                 }`}
               >

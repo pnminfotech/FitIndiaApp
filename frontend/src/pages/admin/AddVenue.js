@@ -32,7 +32,7 @@ function AddVenue() {
     formData.append("sports", venue.sports); // comma-separated string
     formData.append("amenities", venue.amenities); // comma-separated string
     try {
-      const res = await fetch("http://localhost:8000/api/venues", {
+      const res = await fetch("https://api.getfitindia.in/api/venues", {
         method: "POST",
         body: formData,
       });

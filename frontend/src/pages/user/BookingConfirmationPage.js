@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { XCircle, Calendar, Clock, MapPin, Tag } from "lucide-react"; // Added more icons for visual appeal
 
+import { ShoppingCart } from "lucide-react";
 const BookingConfirmationPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -48,21 +49,40 @@ const handleProceedToPay = () => {
 };
 
   return (
-    <div className="min-h-screen   bg-gradient-to-br from-blue-50 to-indigo-100 p-4 sm:p-6 lg:p-8 font-sans">
-      {/* Venue Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-2">
-          {venue.name}
-        </h2>
-        <p className="text-md sm:text-lg text-gray-600 flex items-center justify-center gap-2">
-          <MapPin size={18} className="text-blue-500" /> {venue.address}
-        </p>
-      </div>
+<div className="min-h-screen bg-white mt-20 md:mt-0 md:pt-20 px-4 sm:px-6 lg:px-8 font-sans">
+
+
+      {/* Header with Venue Name and Back Button */}
+     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-gray-200 px-4 py-3 sm:px-8 flex items-center justify-between">
+  {/* Left: Back Button */}
+  <button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 px-3 py-1 rounded-full bg-white text-orange-600 hover:bg-orange-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+  >
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+   
+  </button>
+
+  {/* Center: Venue Name */}
+  <h1 className="text-lg sm:text-2xl font-extrabold text-gray-800 text-center flex-grow mx-4">
+    {venue?.name}
+  </h1>
+
+ 
+</div>
 
       {/* Slot Details Section */}
-      <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-7 mb-8 border border-gray-100 lg:ms-8 lg:me-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-          <Calendar size={24} className="text-blue-500" /> Slot Details ({selectedSlots.length})
+      <div className="bg-gray-200 rounded-2xl shadow-xl p-5 sm:p-7 mb-8 border border-gray-100 lg:ms-8 lg:me-8">
+        <h3 className="text-sm sm:text-sm font-bold text-gray-800 mb-3 flex items-center gap-3">
+          <Calendar size={18} className="text-orange-500" /> Slot Details ({selectedSlots.length})
         </h3>
         <p className="text-md sm:text-lg text-gray-600 mb-5 flex items-center gap-2">
           <Clock size={18} className="text-gray-500" /> {selectedDate}
@@ -74,13 +94,13 @@ const handleProceedToPay = () => {
               className="bg-gray-50 rounded-xl p-4 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
             >
               <div className="flex justify-between items-center mb-2">
-                <span className="font-bold text-base sm:text-lg text-gray-800">
+                <span className="font-bold text-sm sm:text-sm text-gray-800">
                   {slot.startTime} - {slot.endTime}
                 </span>
               </div>
               <p className="text-sm text-gray-600 mb-1">{selectedCourt.courtName}</p>
               <p className="text-sm text-gray-600 flex items-center gap-1">
-                <Tag size={14} className="text-blue-400" /> {sports} • <span className="font-semibold text-blue-800">₹{slot.price}</span>
+                <Tag size={14} className="text-blue-400" /> {sports} • <span className="font-semibold text-gray-800">₹{slot.price}</span>
               </p>
             </div>
           ))}
@@ -88,8 +108,8 @@ const handleProceedToPay = () => {
       </div>
 
       {/* Booking Summary Section */}
-      <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-7 mb-8 border border-gray-100 lg:ms-8 lg:me-8">
-        <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-5">
+      <div className="bg-gray-200 rounded-2xl shadow-xl p-5 sm:p-7 mb-8 border border-gray-100 lg:ms-8 lg:me-8">
+        <h3 className="text-sm sm:text-sm font-bold text-gray-800 mb-5">
           Booking Summary
         </h3>
         <div className="space-y-3">
@@ -115,8 +135,8 @@ const handleProceedToPay = () => {
           </p>
           */}
         </div>
-        <hr className="my-5 border-gray-200" />
-        <div className="font-bold text-xl sm:text-2xl flex justify-between items-center text-gray-900">
+        <hr className="my-5 border-gray-500" />
+        <div className="font-bold text-sm sm:text-sm flex justify-between items-center text-gray-900">
           <span>To Pay Now</span>
           <span>₹{totalPrice}</span>
         </div>
@@ -128,13 +148,13 @@ const handleProceedToPay = () => {
           <input
             type="checkbox"
             defaultChecked
-            className="form-checkbox h-5 w-5 text-blue-800 rounded-md border-gray-300 focus:ring-blue-500 mt-1"
+            className="form-checkbox h-5 w-5 text-orange-800 rounded-md border-gray-300 focus:ring-orange-500 mt-1"
           />
           <span className="text-sm sm:text-base text-gray-700 leading-relaxed">
             I agree to the{" "}
             <button
               onClick={() => setShowRules(true)}
-              className="text-blue-800 hover:text-blue-800 underline font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200"
+              className="text-orange-800 hover:text-orange-800 underline font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-colors duration-200"
             >
               Terms & Conditions
             </button>{" "}
@@ -148,14 +168,14 @@ const handleProceedToPay = () => {
       <div className="fixed bottom-0 left-0 right-0 bg-white p-3 sm:p-4 border-t border-gray-200 shadow-2xl z-40">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div>
-            <span className="text-xl sm:text-sm font-bold text-gray-900">
+            <span className="text-sm sm:text-sm font-bold text-gray-900">
              Final Price : ₹{totalPrice}
             </span>{" "}
             <span className="text-sm sm:text-base font-normal text-gray-600">
               Incl. Taxes
             </span>
           </div>
-          <button onClick={handleProceedToPay} className="bg-blue-800 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-700 transition duration-300 ease-in-out font-semibold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transform active:scale-95">
+          <button onClick={handleProceedToPay} className="bg-orange-600 text-white px-8 py-3 text-sm rounded-lg shadow-lg hover:bg-orange-700 transition duration-300 ease-in-out font-semibold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-75 transform active:scale-95">
             PROCEED TO PAY
           </button>
         </div>

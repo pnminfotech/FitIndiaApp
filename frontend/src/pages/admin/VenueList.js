@@ -36,7 +36,7 @@ const VenueList = () => {
   //View All Venues
   const fetchVenues = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/venues");
+      const response = await fetch("https://api.getfitindia.in/api/venues");
       if (!response.ok) {
         throw new Error("Failed to fetch venues");
       }
@@ -89,7 +89,7 @@ const VenueList = () => {
 
     try {
       const res = await fetch(
-        `http://localhost:8000/api/venues/${editingVenue._id}`,
+        `https://api.getfitindia.in/api/venues/${editingVenue._id}`,
         {
           method: "PUT",
           body: fd,
@@ -116,7 +116,7 @@ const VenueList = () => {
     if (!window.confirm("Are you sure you want to delete?")) return;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/venues/${id}`, {
+      const res = await fetch(`https://api.getfitindia.in/api/venues/${id}`, {
         method: "DELETE",
       });
 
@@ -148,7 +148,7 @@ const VenueList = () => {
               className="bg-white shadow-md rounded-2xl overflow-hidden flex flex-col"
             >
               <img
-                src={`http://localhost:8000/uploads/${venue.image}`}
+                src={`https://api.getfitindia.in/uploads/${venue.image}`}
                 alt={venue.name}
                 className="w-full h-64 sm:h-72 md:h-80 object-cover rounded-t-2xl"
               />

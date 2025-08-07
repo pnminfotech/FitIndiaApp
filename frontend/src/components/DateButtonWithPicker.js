@@ -38,12 +38,12 @@ const DateButtonWithPicker = ({ onDateChange }) => {
         customInput={
           <button
             style={{
-              padding: "10px 16px",
-              fontSize: "16px",
-              backgroundColor: "#effafa",
-              border: "1px solid  #1e90ff",
+              padding: "0px 16px",
+              fontSize: "11px",
+              backgroundColor: "white",
+              border: "1px solid  #f97316",
               borderRadius: "20px",
-              color: "#1e90ff",
+              color: "#f97316",
               cursor: "pointer",
             }}
           >

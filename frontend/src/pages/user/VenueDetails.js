@@ -51,7 +51,7 @@ const VenueDetails = () => {
   }, [carouselImages.length]);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/venues/${id}`)
+    fetch(`https://api.getfitindia.in/api/venues/${id}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -112,7 +112,7 @@ const VenueDetails = () => {
       <div className="fixed top-4 left-4 z-[1003]">
         <button
           onClick={() => setSidebarOpen(true)}
-          className="p-3 bg-white rounded-full shadow-lg text-blue-700 hover:bg-blue-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="p-3 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
           aria-label="Open sidebar"
         >
           <FaBars className="text-xl" />
@@ -126,7 +126,7 @@ const VenueDetails = () => {
       <div className="absolute top-4 right-4 z-[1002] sm:top-6 sm:right-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-blue-600 hover:bg-blue-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+          className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
         >
           <svg
             className="w-5 h-5"
@@ -148,7 +148,7 @@ const VenueDetails = () => {
           <img
             src={
               venue?.image
-                ? `http://localhost:8000/uploads/${venue.image}`
+                ? `https://api.getfitindia.in/uploads/${venue.image}`
                 : carouselImages[currentImageIndex] // Fallback to carousel images
             }
             alt={venue.name}
@@ -159,7 +159,7 @@ const VenueDetails = () => {
 
           {/* Venue Info Overlay */}
           <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-10 text-white">
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            {/* <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
               <div>
                 <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight drop-shadow-lg">
                   {venue.name}
@@ -174,40 +174,63 @@ const VenueDetails = () => {
                   <span className="text-gray-300 text-sm font-normal ml-1">(based on reviews)</span>
                 </div>
               </div>
+           
+            </div> */}
+          </div>
+        </div>
+
+        {/* Content Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-8 lg:p-12 bg-white">
+
+          {/* Main Description & Details (Left/Center Column) */}
+          <div className="lg:col-span-2 sm:space-y-3 space-y-4">
+            {/* Description */}
+            <section className=" p-6 sm:p-8 rounded-2xl border border-gray-300 ">
+               <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-1">
+              <div>
+                <h1 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
+                  {venue.name}
+                </h1>
+                <div className="mt-2 flex items-center gap-3 text-sm sm:text-sm text-gray-500 drop-shadow">
+                  <FaMapMarkerAlt className="text-green-600" />
+                  <p className="font-medium ">{venue.location?.address || venue.address}</p>
+                </div>
+                <hr className="my-2"/>
+                <div className="flex items-center gap-2 text-sm sm:text-2sm font-bold text-yellow-400 mt-2 drop-shadow">
+                  <FaStar />
+                  <span>{venue.rating || "4.5"}</span>
+                  <span className="text-gray-300 text-sm font-normal ml-1">(based on reviews)</span>
+                </div>
+              </div>
               {/* <div className="flex items-center gap-3 text-xl sm:text-2xl font-bold text-green-400 drop-shadow">
                 <FaRupeeSign />
                 <span className="text-white">Price:</span> {venue.pricing || "Contact for pricing"}
               </div> */}
             </div>
-          </div>
-        </div>
-
-        {/* Content Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-8 lg:p-12">
-
-          {/* Main Description & Details (Left/Center Column) */}
-          <div className="lg:col-span-2 space-y-8">
+            </section>
             {/* Description */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-blue-100 transform hover:scale-[1.005] transition-transform duration-300">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-800 border-b-2 border-blue-200 pb-2">
+            <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
+              <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
                 About {venue.name}
               </h2>
-              <p className="text-gray-700 leading-relaxed text-base sm:text-lg">
+              <p className="text-gray-700 leading-relaxed text-sm md:text-base sm:text-lg mt-1">
                 {venue.description || "No description provided by venue owner. This premium sports facility offers state-of-the-art equipment and a vibrant atmosphere for all sports enthusiasts."}
               </p>
             </section>
 
             {/* Sports Available */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-blue-100 transform hover:scale-[1.005] transition-transform duration-300">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-800 border-b-2 border-blue-200 pb-2">
+            <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
+              <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
                 Sports Available
               </h2>
               {sports.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className=" flex gap-4 mt-2">
                   {sports.map((sport, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-3 bg-blue-50 text-blue-800 px-5 py-3 rounded-xl text-base capitalize font-medium shadow-sm hover:bg-blue-100 transition-colors duration-200"
+                      className="flex items-center gap-3 bg-gray-100 text-gray-600 px-2 py-1 rounded-xl   capitalize font-small shadow-sm hover:bg-blue-100 transition-colors duration-200"
+                    style={{fontSize:13}}
+                    
                     >
 
                       <span>{sport}</span>
@@ -219,18 +242,18 @@ const VenueDetails = () => {
               )}
             </section>
                {/* Amenities */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-blue-100 transform hover:scale-[1.005] transition-transform duration-300">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-800 border-b-2 border-blue-200 pb-2">
+            <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
+              <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
                 Amenities
               </h2>
               {amenities.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 flex gap-4 mt-2">
                   {amenities.map((a, i) => (
                     <div
                       key={i}
-                      className="flex items-center gap-3 bg-gray-50 text-gray-700 px-5 py-3 rounded-xl text-base font-medium shadow-sm hover:bg-gray-100 transition-colors duration-200"
+                      className="flex items-center gap-3  text-gray-700 px-2 text-sm  "
                     >
-                      <FaCheckCircle className="text-green-500" />
+                      <FaCheckCircle className="text-gray-600 text-sm" />
                       <span>{a}</span>
                     </div>
                   ))}
@@ -246,11 +269,11 @@ const VenueDetails = () => {
          
 
             {/* Share + Direction Buttons */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-blue-100 transform hover:scale-[1.005] transition-transform duration-300">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-800 border-b-2 border-blue-200 pb-2">
+            <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
+              <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
                 Connect & Locate
               </h2>
-              <div className="flex flex-col  gap-4">
+              <div className="flex gap-1 mt-1">
            <button
   onClick={() => {
     if (navigator.share) {
@@ -269,7 +292,7 @@ const VenueDetails = () => {
         .catch(() => alert("Failed to copy the link."));
     }
   }}
-  className="flex-1 flex items-center justify-center gap-3 px-6 py-3 border border-gray-300 rounded-full text-lg text-gray-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+  className="flex-1 flex items-center justify-center gap-3  border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-orange-50 hover:border-orange-300 transition-all duration-300 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
 >
   <FaShareAlt /> Share
 </button>
@@ -287,7 +310,7 @@ const VenueDetails = () => {
       alert("Coordinates not available.");
     }
   }}
-  className="flex-1 flex items-center justify-center gap-3 px-6 py-3 border border-gray-300 rounded-full text-lg text-gray-700 hover:bg-blue-50 hover:border-blue-300 transition-all duration-300 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+  className="flex-1 flex items-center justify-center gap-3 py-3  border border-gray-300 rounded-full text-sm text-gray-700 hover:bg-blue-50 hover:border-orange-300 transition-all duration-300 font-semibold shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
 >
   <FaMapMarkerAlt /> Directions
 </button>
@@ -297,17 +320,17 @@ const VenueDetails = () => {
             </section>
 
             {/* Booking Button */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-blue-100 transform hover:scale-[1.005] transition-transform duration-300">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-blue-800 border-b-2 border-blue-200 pb-2">
+            {/* <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 "> */}
+              {/* <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
                 Ready to Play?
-              </h2>
+              </h2> */}
               <button
                 onClick={() => navigate(`/user/booking/${id}`)}
-                className="w-full bg-blue-600 text-white text-xl font-bold px-8 py-4 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                className="w-full bg-orange-600 text-white text-sm font-bold px-8 py-4 rounded-xl hover:bg-orange-700 transition-all duration-300 shadow-sm hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300"
               >
-                Book Now
+               Select A Sport To Proceed
               </button>
-            </section>
+            {/* </section> */}
 
             {/* Optional: Sticky Booking Button at bottom for better UX on long scrolls */}
             {/* <div className="fixed bottom-0 left-0 right-0 bg-white shadow-xl p-4 sm:p-6 border-t border-gray-200 z-50 lg:hidden">

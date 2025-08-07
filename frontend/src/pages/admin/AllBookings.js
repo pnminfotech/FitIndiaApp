@@ -8,7 +8,7 @@ const AllBookings = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/bookings/all", {
+        const res = await fetch("https://api.getfitindia.in/api/bookings/all", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

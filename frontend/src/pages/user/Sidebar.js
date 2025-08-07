@@ -10,11 +10,11 @@ import {
 } from "react-icons/fa";
 
 import profileimg from "../../assets/profile.png";
-import MyBookings from "./MyBookings";
 
 const Sidebar = ({ onClose }) => {
   const [user, setUser] = useState(null);
- const navigate = useNavigate();
+  const navigate = useNavigate();
+
   useEffect(() => {
     fetchUserDetails();
   }, []);
@@ -24,7 +24,7 @@ const Sidebar = ({ onClose }) => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
-      const res = await fetch("http://localhost:8000/api/users/me", {
+      const res = await fetch("https://api.getfitindia.in/api/users/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -37,6 +37,13 @@ const Sidebar = ({ onClose }) => {
     } catch (err) {
       console.error("Error fetching user:", err);
     }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    onClose();
+    navigate("/user/login");
   };
 
   return (
@@ -58,7 +65,7 @@ const Sidebar = ({ onClose }) => {
           {user ? (
             <p className="text-sm text-gray-200">📱 {user.name}</p>
           ) : (
-            <p className="text-sm text-gray-400">Loading...</p>
+            <p className="text-sm text-gray-400">Not logged in</p>
           )}
           <button
             onClick={onClose}
@@ -68,48 +75,71 @@ const Sidebar = ({ onClose }) => {
           </button>
         </div>
 
-       <ul className="p-4 space-y-4">
-  <li
-    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
-    onClick={() => {
-      onClose();
-      navigate("/user/homepage");
-    }}
-  >
-    <FaHome /> Homepage
-  </li>
+        <ul className="p-4 space-y-4">
+          <li
+            className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+            onClick={() => {
+              onClose();
+              navigate("/user/homepage");
+            }}
+          >
+            <FaHome /> Homepage
+          </li>
 
-  <li
-    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
-    onClick={() => {
-      onClose();
-      navigate("/user/profile");
-    }}
-  >
-    <FaUser /> Profile
-  </li>
+          <li
+            className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+            onClick={() => {
+              onClose();
+              navigate("/user/profile");
+            }}
+          >
+            <FaUser /> Profile
+          </li>
 
-  <li
-    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
-    onClick={() => {
-      onClose();
-      navigate("/user/sportsvenue");
-    }}
-  >
-    <FaPlus /> Venues
-  </li>
+          <li
+            className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+            onClick={() => {
+              onClose();
+              navigate("/user/sportsvenue");
+            }}
+          >
+            <FaPlus /> Venues
+          </li>
 
-  <li
-    className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
-    onClick={() => {
-      onClose();
-      navigate("/user/mybookings");
-    }}
-  >
-    <FaClipboardList /> My Bookings
-  </li>
-</ul>
+          <li
+            className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer"
+            onClick={() => {
+              onClose();
+              navigate("/user/mybookings");
+            }}
+          >
+            <FaClipboardList /> My Bookings
+          </li>
 
+          {!user && (
+            <li
+              className="flex items-center gap-3 hover:bg-gray-700 px-4 py-2 rounded-md cursor-pointer text-green-400"
+              onClick={() => {
+                onClose();
+                navigate("/user/login");
+              }}
+            >
+              <FaUser /> Log In
+            </li>
+          )}
+        </ul>
+
+        {/* ✅ Logout Button at Bottom */}
+        {user && (
+          <div className="absolute bottom-4 w-full px-4">
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md text-white font-medium"
+            >
+              <FaTimes /> Logout
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

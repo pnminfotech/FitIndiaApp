@@ -18,8 +18,8 @@ const Login = () => {
 
     setLoading(true);
     const url = isRegister
-      ? "http://localhost:8000/api/auth/register"
-      : "http://localhost:8000/api/auth/login";
+      ? "https://api.getfitindia.in/api/auth/register"
+      : "https://api.getfitindia.in/api/auth/login";
 
     const body = isRegister
       ? { name, email, password, role: "user" }
