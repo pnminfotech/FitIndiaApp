@@ -107,44 +107,102 @@ const VenueDetails = () => {
 
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
-      {/* Sidebar Toggle */}
-      <div className="fixed top-4 left-4 z-[1003]">
-        <button
+    // <div className="relative min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 font-sans">
+    //   {/* Sidebar Toggle */}
+    //   <div className="fixed top-4 left-4 z-[1003]">
+    //     <button
+    //       onClick={() => setSidebarOpen(true)}
+    //       className="p-3 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+    //       aria-label="Open sidebar"
+    //     >
+    //       <FaBars className="text-xl" />
+    //     </button>
+    //   </div>
+
+    //   {/* Sidebar */}
+    //   {sidebarOpen && <Sidebar onClose={() => setSidebarOpen(false)} />}
+
+    //   {/* Back Button */}
+    //   <div className="absolute top-4 right-4 z-[1002] sm:top-6 sm:right-6">
+    //     <button
+    //       onClick={() => navigate(-1)}
+    //       className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
+    //     >
+    //       <svg
+    //         className="w-5 h-5"
+    //         fill="none"
+    //         stroke="currentColor"
+    //         strokeWidth="2"
+    //         viewBox="0 0 24 24"
+    //       >
+    //         <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    //       </svg>
+    //       Back
+    //     </button>
+    //   </div>
+<div className="min-h-screen bg-white mt-20 md:mt-0 md:pt-20 px-4 sm:px-6 lg:px-8 font-sans">
+
+
+      {/* Header with Venue Name and Back Button */}
+     <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md border-b border-gray-200 px-4 py-3 sm:px-8 flex items-center justify-between">
+  {/* Left: Back Button */}
+  {/* <button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 px-3 py-1 rounded-full bg-white text-orange-600 hover:bg-orange-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+  >
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+   
+  </button> */}
+
+  {/* Center: Venue Name */}
+   {/* Sidebar Toggle */}
+  
+<button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 px-3 py-1 rounded-full bg-white text-orange-600 hover:bg-orange-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+  >
+    <svg
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      viewBox="0 0 24 24"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+     {/* Center: Venue Name */}
+ 
+
+  </button>
+
+
+   <h1 className="text-lg sm:text-2xl font-extrabold text-gray-800 text-center flex-grow mx-4">
+    {venue?.name}
+  </h1>
+      {/* Sidebar */}
+      {sidebarOpen && <Sidebar onClose={() => setSidebarOpen(false)} />} 
+
+  {/* Right: Cart Icon */}
+  <button
           onClick={() => setSidebarOpen(true)}
           className="p-3 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
           aria-label="Open sidebar"
         >
           <FaBars className="text-xl" />
         </button>
-      </div>
-
-      {/* Sidebar */}
-      {sidebarOpen && <Sidebar onClose={() => setSidebarOpen(false)} />}
-
-      {/* Back Button */}
-      <div className="absolute top-4 right-4 z-[1002] sm:top-6 sm:right-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-lg text-orange-600 hover:bg-blue-100 font-semibold transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-          Back
-        </button>
-      </div>
-
+</div>
       {/* Main Content Area - Full width on all screens */}
       <div className="w-full max-w-full mx-auto pb-12">
         {/* Hero Image / Carousel */}
-        <div className="relative h-[300px] sm:h-[450px] md:h-[550px] lg:h-[650px] overflow-hidden shadow-xl">
+        <div className="relative h-[200px] sm:h-[200px] md:h-[400px] lg:h-[400px] overflow-hidden shadow-xl border rounded-xl">
           <img
             src={
               venue?.image
@@ -180,10 +238,10 @@ const VenueDetails = () => {
         </div>
 
         {/* Content Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-4 sm:p-8 lg:p-12 bg-white">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8  sm:p-8 lg:p-12 bg-white">
 
           {/* Main Description & Details (Left/Center Column) */}
-          <div className="lg:col-span-2 sm:space-y-3 space-y-4">
+          <div className="lg:col-span-2 sm:space-y-3 space-y-4 mt-5">
             {/* Description */}
             <section className=" p-6 sm:p-8 rounded-2xl border border-gray-300 ">
                <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-1">
@@ -219,28 +277,29 @@ const VenueDetails = () => {
             </section>
 
             {/* Sports Available */}
-            <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
-              <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
-                Sports Available
-              </h2>
-              {sports.length > 0 ? (
-                <div className=" flex gap-4 mt-2">
-                  {sports.map((sport, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-3 bg-gray-100 text-gray-600 px-2 py-1 rounded-xl   capitalize font-small shadow-sm hover:bg-blue-100 transition-colors duration-200"
-                    style={{fontSize:13}}
-                    
-                    >
+           <section className="bg-white p-6 sm:p-8 rounded-2xl border border-gray-300">
+  <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight text-black">
+    Sports Available
+  </h2>
+  
+  {sports.length > 0 ? (
+    <div className="flex flex-wrap gap-3 mt-3">
+      {sports.map((sport, i) => (
+        <div
+          key={i}
+          className="bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm capitalize font-medium shadow-sm hover:bg-green-200 transition"
+        >
+          {sport}
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-600 italic mt-2">
+      No specific sports listed, please contact the venue.
+    </p>
+  )}
+</section>
 
-                      <span>{sport}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-600 italic">No specific sports listed, please contact the venue.</p>
-              )}
-            </section>
                {/* Amenities */}
             <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 ">
               <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">

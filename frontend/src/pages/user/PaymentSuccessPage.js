@@ -43,7 +43,7 @@ const PaymentSuccessPage = () => {
   const { venue, selectedDate, selectedCourt, selectedSlots, totalPrice, sports } = bookingData;
 
  return (
-  <div className="min-h-screen bg-gradient-to-br from-orange-50 to-indigo-50 flex flex-col justify-center items-center px-4 py-6 sm:py-10 font-sans">
+  <div className="min-h-screen bg-gradient-to-br from-white to-white flex flex-col justify-center items-center px-4 py-6 sm:py-10 font-sans">
     {/* Confetti */}
     {showConfetti && (
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -62,7 +62,7 @@ const PaymentSuccessPage = () => {
       </div>
     )}
 
-    <div className="relative z-10 bg-white rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 max-w-xl w-full text-center border border-green-100 animate-fade-in-up">
+    <div className="relative z-10 bg-gray-100 rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 max-w-xl w-full text-center border border-gray-400 animate-fade-in-up">
       <CheckCircle size={30} className="text-green-500 mx-auto mb-5 drop-shadow-md" />
       <h2 className="text-sm sm:text-4xl font-extrabold text-gray-800 mb-3 tracking-tight leading-snug">
         Payment Successful!
@@ -72,7 +72,7 @@ const PaymentSuccessPage = () => {
  
       </p>
 
-      <div className="bg-gray-50 rounded-xl p-5 sm:p-6 mb-6 border border-gray-100 text-left shadow-inner">
+      <div className="bg-gray-200 rounded-xl p-5 sm:p-6 mb-6 border border-gray-100 text-left shadow-inner">
         <h3 className="text-sm sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3 border-gray-200 flex items-center gap-3">
           <Building size={22} className="text-orange-500" /> Booking Details
         </h3>
@@ -113,7 +113,7 @@ const PaymentSuccessPage = () => {
       </div>
 
       {/* Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
+      {/* <div className="flex flex-col sm:flex-row justify-center gap-4 mt-4">
         <button
           onClick={() => navigate("/")}
           className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-orange-700 text-white font-semibold text-base rounded-lg shadow-md hover:bg-orange-800 transition-all duration-300"
@@ -126,7 +126,22 @@ const PaymentSuccessPage = () => {
         >
           <Clock size={20} className="mr-2" /> My Bookings
         </button>
-      </div>
+      </div> */}
+      <div className="flex flex-row justify-center gap-4 mt-4">
+  <button
+    onClick={() => navigate("/")}
+    className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2 bg-orange-700 text-white font-semibold text-sm rounded-lg shadow-md hover:bg-orange-800 transition-all duration-300"
+  >
+   Home
+  </button>
+  <button
+    onClick={() => navigate("/user/mybookings")}
+    className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2 border border-gray-300 text-gray-800 font-semibold text-sm rounded-lg shadow hover:bg-gray-100 transition-all duration-300"
+  >
+   MyBookings
+  </button>
+</div>
+
     </div>
 
     {/* CSS for animations and confetti */}

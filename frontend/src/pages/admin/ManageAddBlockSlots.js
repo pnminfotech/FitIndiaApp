@@ -24,7 +24,7 @@ const ManageAndBlockSlots = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-1">
+    <div className="max-w-6xl mx-auto p-1 mt-10">
       {/* Tabs */}
       <div className="flex gap-4 mb-6">
         <button

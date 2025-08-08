@@ -1,14 +1,11 @@
 import React, { useState } from "react";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { AiOutlinePlusCircle } from "react-icons/ai";
-import { FaClipboardList, FaUserTie, FaBars,FaUsers } from "react-icons/fa";
+import { FaClipboardList, FaUserTie, FaBars, FaUsers } from "react-icons/fa";
 import { MdSchedule, MdDashboard } from "react-icons/md";
-import { MdExpandMore, MdExpandLess } from "react-icons/md";
 import { NavLink, Outlet } from "react-router-dom";
-import logo from "../assets/logo.png";
 
 const AdminLayout = () => {
-  const [isCollapse, setIsCollapse] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -35,7 +32,6 @@ const AdminLayout = () => {
           {/* Sidebar Header */}
           <div className="text-2xl font-bold text-center py-4 border-b border-black-600 flex justify-between items-center px-4">
             <h5 className="mx-auto">Admin</h5>
-           
             <button
               className="md:hidden text-white"
               onClick={() => setSidebarOpen(false)}
@@ -46,13 +42,48 @@ const AdminLayout = () => {
 
           {/* Sidebar Nav */}
           <nav className="p-4 flex md:flex-col flex-wrap justify-around md:justify-start gap-2">
-            <NavItem to="/admin/dashboard" icon={<MdDashboard size={30} />} label="Dashboard" />
-            <NavItem to="/admin/venues" icon={<HiOutlineBuildingOffice2 size={30} />} label="Venues" />
-            <NavItem to="/admin/venues/add" icon={<AiOutlinePlusCircle size={30} />} label="Add Venue" />
-            <NavItem to="/admin/coaches" icon={<FaUserTie size={30} />} label="Coaches" />
-            <NavItem to="/admin/bookings" icon={<FaUsers size={30} />} label="Users" />
-            <NavItem to="/admin/allbookings" icon={<FaClipboardList size={30} />} label="Bookings" />
-            <NavItem to="/admin/manage" icon={<MdSchedule size={30} />} label="Manage Slots" />
+            <NavItem
+              to="/admin/dashboard"
+              icon={<MdDashboard size={30} />}
+              label="Dashboard"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/venues"
+              icon={<HiOutlineBuildingOffice2 size={30} />}
+              label="Venues"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/venues/add"
+              icon={<AiOutlinePlusCircle size={30} />}
+              label="Add Venue"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/coaches"
+              icon={<FaUserTie size={30} />}
+              label="Coaches"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/bookings"
+              icon={<FaUsers size={30} />}
+              label="Users"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/allbookings"
+              icon={<FaClipboardList size={30} />}
+              label="Bookings"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <NavItem
+              to="/admin/manage"
+              icon={<MdSchedule size={30} />}
+              label="Manage Slots"
+              onClick={() => setSidebarOpen(false)}
+            />
           </nav>
         </aside>
 
@@ -65,11 +96,12 @@ const AdminLayout = () => {
   );
 };
 
-// Reusable NavItem component
-const NavItem = ({ to, icon, label }) => (
+// ✅ Reusable NavItem component
+const NavItem = ({ to, icon, label, onClick }) => (
   <NavLink
     to={to}
     end
+    onClick={onClick}
     className={({ isActive }) =>
       `text-sm md:text-xl p-5 rounded-lg flex items-center gap-3 transition-all duration-200
       ${isActive ? "bg-gray-400 text-black" : "hover:bg-gray-300 hover:text-black"}`

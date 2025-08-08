@@ -7,7 +7,10 @@ import Slider from "react-slick";
 import { FiPhone, FiMail, FiMapPin, FiArrowRight } from "react-icons/fi";
 import { HiOutlineLightningBolt, HiOutlineGlobeAlt, HiOutlineUsers } from "react-icons/hi";
 import { Link,  useNavigate } from "react-router-dom";
-
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
+import coachingPromo from "../../assets/coaching.jpeg";
+import coachingPromo1 from "../../assets/mobile.jpg";
+import coachingPromo3 from "../../assets/stadium.jpg";
 // Images
 import carouselHero1 from "../../assets/garden1.png";
 import carouselHero2 from "../../assets/garden2.png";
@@ -181,6 +184,115 @@ const navigate = useNavigate();
           </div>
         )}
       </nav>
+<section className="bg-white py-10 px-4 sm:px-8 md:px-16 lg:px-32">
+  {/* Social Icons Row */}
+  <div className="flex justify-center md:justify-start gap-5 mb-6 text-gray-600 text-lg">
+  <FaFacebookF className="hover:text-blue-600 cursor-pointer" />
+  <FaInstagram className="hover:text-pink-500 cursor-pointer" />
+  <FaLinkedinIn className="hover:text-blue-800 cursor-pointer" />
+  <FaYoutube className="hover:text-red-600 cursor-pointer" />
+</div>
+
+
+  {/* Carousel */}
+  <Slider
+    dots
+    infinite
+    speed={500}
+    slidesToShow={1}
+    slidesToScroll={1}
+    autoplay
+    autoplaySpeed={4000}
+  >
+    {/* Slide 1 */}
+    <div>
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+        {/* Text Content */}
+        <div className="flex-1 text-center lg:text-left">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-black leading-tight">
+            Expert-Led 
+          </h2>
+          <p className="mt-4 text-gray-600 text-base sm:text-lg font-medium max-w-xl">
+            Our certified coaches bring years of professional experience to each session.
+          </p>
+          <Link
+            to="/user/sportsvenue"
+            className="mt-4 inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full transition duration-300"
+          >
+            Try Now
+          </Link>
+        </div>
+
+        {/* Image */}
+        <div className="flex-1">
+          <img
+            src={coachingPromo}
+            alt="Pro Coaching"
+            className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Slide 2 */}
+    <div>
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="flex-1 text-center lg:text-left">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-black leading-tight">
+            Discover
+          </h2>
+          <p className="mt-4 text-gray-600 text-base sm:text-lg font-medium max-w-xl">
+            Easily explore top venues and coaching programs tailored to your sport and location.
+          </p>
+          <Link
+            to="/user/sportsvenue"
+            className="mt-6 inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full transition duration-300"
+          >
+            Try Now
+          </Link>
+        </div>
+
+        <div className="flex-1">
+          <img
+            src={coachingPromo1}
+            alt="Discover"
+            className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
+          />
+        </div>
+      </div>
+    </div>
+
+    {/* Slide 3 */}
+    <div>
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="flex-1 text-center lg:text-left">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-black leading-tight">
+            Book Instantly
+          </h2>
+          <p className="mt-4 text-gray-600 text-base sm:text-lg font-medium max-w-xl">
+            Seamlessly book your slot with real-time availability and secure payment options.
+          </p>
+          <Link
+            to="/user/sportsvenue"
+            className="mt-6 inline-block bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2 rounded-full transition duration-300"
+          >
+            Try Now
+          </Link>
+        </div>
+
+        <div className="flex-1">
+          <img
+            src={coachingPromo3}
+            alt="Book Instantly"
+            className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
+          />
+        </div>
+      </div>
+    </div>
+  </Slider>
+</section>
+
+
 
       {/* Carousel Banner */}
       <section className="px-0 sm:px-[80px] pt-4 pb-6">
@@ -234,15 +346,7 @@ const navigate = useNavigate();
         </Slider>
       </section>
 
-      {/* Hero / Welcome */}
-      {/* <section className="mt-1 text-center ">
-        <p className="text-2xl font-extrabold text-gray-900 mb-6 text-center leading-tight">
-          Discover Your Next <span className="text-orange-500">Playing Field</span>
-        </p>
-        <p className="text-[12px] sm:text-[12px] md:text-[13px] lg:text-sm  font-extrabold text-gray-900 mb-10 text-center leading-tight">
-          Explore Our Top Venues
-        </p>
-      </section> */}
+   
 
    
 
@@ -537,7 +641,7 @@ const navigate = useNavigate();
                   to="/user/sportsvenue"
                   className="text-[18px] sm:text-[16px] md:text-[18px] font-medium hover:underline underline-offset-4 decoration-orange-500"
                 >
-                  SPORTS VENUES
+                  Sports Venue
                 </Link>
               </li>
               <li>
@@ -545,7 +649,7 @@ const navigate = useNavigate();
                   onClick={handleOpenForm}
                   className="text-[18px] sm:text-[16px] md:text-[18px] font-medium hover:underline underline-offset-4 decoration-orange-500 bg-transparent"
                 >
-                  COACHING
+                  Coaching
                 </button>
               </li>
               <li>
@@ -591,7 +695,7 @@ const navigate = useNavigate();
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm mb-2">
               <FiMail className="text-orange-500 text-lg" />
-              <span>support@getfitindia.in</span>
+              <span>ashvamedhsports@gmail.com</span>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm">
               <FiMapPin className="text-orange-500 text-lg" />

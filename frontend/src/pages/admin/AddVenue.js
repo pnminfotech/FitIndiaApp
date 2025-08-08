@@ -63,7 +63,7 @@ function AddVenue() {
   };
 
   return (
-    <div className="px-4 sm:px-6 md:px-10 py-6">
+    <div className="px-4 sm:px-6 md:px-10 py-6 mt-2">
       <h2 className="font-bold text-2xl sm:text-3xl my-5 text-center sm:text-left">
         Add New Venue
       </h2>

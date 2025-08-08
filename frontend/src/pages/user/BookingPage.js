@@ -429,7 +429,7 @@ const toggleSlotSelection = (slot) => {
               <button
   key={index}
   onClick={() => toggleSlotSelection(slot)}
-  className={`w-full rounded-xl border flex items-center justify-between p-4 transition-all duration-200 ease-in-out
+  className={`w-full rounded-xl border flex items-center justify-between ml-1 p-4 transition-all duration-200 ease-in-out
     ${
       isSelected
         ? "bg-green-50 text-black border-green-700 shadow-md scale-[1.01]"

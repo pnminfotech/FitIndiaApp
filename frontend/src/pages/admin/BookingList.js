@@ -41,7 +41,7 @@ const toggleBlock = async (userId) => {
 };
 
   return (
-    <div className="px-4 py-6 overflow-x-auto">
+    <div className="px-4 py-6 overflow-x-auto mt-10">
       <h2 className="text-2xl font-bold mb-6">👥 All Registered Users</h2>
 
       {loading ? (

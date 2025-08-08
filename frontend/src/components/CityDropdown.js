@@ -27,7 +27,7 @@ function CityDropdown({ selectedCity, onSelectCity, cities }) {
       {/* Always show "Select City" on button */}
       <button
         onClick={toggleDropdown}
-        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-orange-600 bg-white  font-medium shadow-sm hover:bg-gray-50 text-[10px] sm:text-[10px] md:text-[12px] lg:text-sm"
+        className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-full text-orange-600 bg-white  font-medium shadow-sm hover:bg-gray-50 text-[12px] sm:text-[12px] md:text-[12px] lg:text-sm"
       >
         Select City <FaChevronDown className="ml-2 mt-0.5" />
       </button>

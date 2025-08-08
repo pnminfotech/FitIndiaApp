@@ -137,11 +137,11 @@ const VenueList = () => {
 
   return (
     <>
-      <div className="px-4 sm:px-6 lg:px-10 ">
+      <div className="px-4 sm:px-6 lg:px-10 mt-10">
         <h2 className="text-2xl sm:text-3xl font-bold my-6 sm:my-10">
           All Venues
         </h2>
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-10">
+        <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
           {curentVenue.map((venue, idx) => (
             <div
               key={idx}

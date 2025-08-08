@@ -14,7 +14,7 @@ function Header({ selectedCity, onSelectCity, uniqueCities, onToggleSidebar }) {
         <img
           src={logo3}
           alt="Fit India Logo"
-          className="h-[60px] w-[60px] rounded-full"
+          className="h-[40px] w-[40px] rounded-full"
         />
         <CityDropdown
           selectedCity={selectedCity}
@@ -25,9 +25,9 @@ function Header({ selectedCity, onSelectCity, uniqueCities, onToggleSidebar }) {
 
       {/* Right icons */}
       <div className="flex items-center gap-4 lg:mr-[42px]">
-        <FiSearch className="text-[20px] font-bold text-blue-500 cursor-pointer" />
+        {/* <FiSearch className="text-[20px] font-bold text-orange-500 cursor-pointer" /> */}
         <FaUser
-          className="text-[20px] font-bold text-blue-500 cursor-pointer"
+          className="text-[20px] font-bold text-orange-500 cursor-pointer"
           onClick={onToggleSidebar}
         />
       </div>

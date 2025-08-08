@@ -31,7 +31,7 @@ const AllBookings = () => {
   }, [token]);
 
   return (
-    <div className="px-4 py-6 overflow-x-auto">
+    <div className="px-4 py-6 overflow-x-auto mt-10">
       <h2 className="text-2xl font-bold mb-6">📋 All Bookings (Admin View)</h2>
 
       {loading ? (
