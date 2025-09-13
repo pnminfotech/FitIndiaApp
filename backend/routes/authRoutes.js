@@ -12,13 +12,66 @@
 
 
 
-// routes/authRoutes.js
+
+
+
+
+
+
+
+
 import express from "express";
-import { register, login } from "../controllers/authController.js";
+import { register, adminLogin, requestOtp, verifyOtp } from "../controllers/authController.js";
 
 const router = express.Router();
 
-router.post("/register", register);
-router.post("/login", login);
+// Admin routes
+router.post("/admin/register", register);   // optional, can remove if not needed
+router.post("/admin/login", adminLogin);
+
+// User OTP routes
+router.post("/otp/request", requestOtp);
+router.post("/otp/verify", verifyOtp);
 
 export default router;
+
+
+
+// // login by email
+
+// // // routes/authRoutes.js
+// import express from "express";
+// import { register, login } from "../controllers/authController.js";
+
+// const router = express.Router();
+
+// router.post("/register", register);
+// router.post("/login", login);
+
+// export default router;
+
+
+
+
+// for admin email login and 
+// for user mobile otp login 
+
+// import express from "express";
+// import {
+//   registerAdminCoach,
+//   loginAdminCoach,
+//   sendOtp,
+//   verifyOtp,
+// } from "../controllers/authController.js";
+
+// const router = express.Router();
+
+// /* ✅ Admin / Coach */
+// router.post("/register", registerAdminCoach);   // register admin/coach
+// router.post("/login", loginAdminCoach);         // login admin/coach
+
+// /* ✅ User (mobile + OTP) */
+// router.post("/send-otp", sendOtp);              // send OTP to user
+// router.post("/verify-otp", verifyOtp);          // verify OTP & login user
+
+// export default router;

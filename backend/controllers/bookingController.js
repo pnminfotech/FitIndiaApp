@@ -1,10 +1,17 @@
 import Booking from '../models/Booking.js';
 import Venue from '../models/VenueModel.js';
-
-import BlockedSlot from '../models/BlockedSlot.js'; // Make sure this is imported
-
+import BlockedSlot from '../models/BlockedSlot.js';
+import Razorpay from 'razorpay';
+import { sendBookingCancelledSMS } from "../utils/smsService.js";
 export const createBooking = async (req, res) => {
   console.log("🧾 Incoming Booking Payload:", req.body);
+  console.log("RAZORPAY_KEY_ID:", process.env.RAZORPAY_KEY_ID);
+
+  // Initialize Razorpay here (env will be available now)
+  const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
 
   try {
     const {
@@ -12,23 +19,24 @@ export const createBooking = async (req, res) => {
       courtId,
       courtName,
       date,
-      selectedSlots, // array of slots from frontend
+      selectedSlots,
     } = req.body;
 
     const userId = req.user.id;
     const bookingsToSave = [];
+    let totalAmount = 0;
 
     for (const slot of selectedSlots) {
-      const { startTime, endTime } = slot;
+      const { startTime, endTime, price } = slot;
 
-      // Check if slot is already booked
+      // Prevent double-booking
       const alreadyBooked = await Booking.findOne({
         venueId,
         courtId,
         date,
         startTime,
         endTime,
-        status: "booked",
+        status: { $in: ["pending", "paid"] },  // block both pending + paid
       });
 
       if (alreadyBooked) {
@@ -37,7 +45,6 @@ export const createBooking = async (req, res) => {
         });
       }
 
-      // Check if slot is blocked
       const isBlocked = await BlockedSlot.findOne({
         venueId,
         courtId,
@@ -52,7 +59,9 @@ export const createBooking = async (req, res) => {
         });
       }
 
-      // If not booked or blocked, prepare to save it
+      const slotPrice = price || 0;
+      totalAmount += slotPrice;
+
       bookingsToSave.push({
         userId,
         venueId,
@@ -61,20 +70,34 @@ export const createBooking = async (req, res) => {
         date,
         startTime,
         endTime,
-        price: slot.price || 0,
-        status: "booked",
+        price: slotPrice,
+       status: "pending",
       });
     }
 
-    // Save all valid bookings in one go
     const savedBookings = await Booking.insertMany(bookingsToSave);
 
-    res.status(201).json(savedBookings);
+    const options = {
+      amount: totalAmount * 100,
+      currency: "INR",
+      receipt: `receipt_${savedBookings[0]._id}`,
+      payment_capture: 1,
+    };
+
+    const order = await razorpay.orders.create(options);
+
+    res.status(201).json({
+      bookings: savedBookings,
+      razorpayOrder: order,
+      amount: totalAmount,
+    });
   } catch (err) {
     console.error("Booking creation error:", err);
     res.status(500).json({ message: "Server error while booking slots" });
   }
 };
+
+
 
 
 // GET /api/bookings/:venueId/:courtId
@@ -84,7 +107,7 @@ export const getCourtBookings = async (req, res) => {
     const bookings = await Booking.find({
       venueId,
       courtId,
-      status: 'booked',
+       status: { $in: ["pending", "paid"] }, 
     });
     res.json(bookings);
   } catch (err) {
@@ -102,22 +125,70 @@ export const getUserBookings = async (req, res) => {
   }
 };
 
-export const cancelBooking = async (req, res) => {
-  const bookingId = req.params.id;
 
-  try {
-    const booking = await Booking.findById(bookingId);
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
+// export const cancelBooking = async (req, res) => {
+//   const bookingId = req.params.id;
 
-    booking.status = "cancelled";
-    await booking.save();
+//   // Initialize Razorpay instance here
+//   const razorpay = new Razorpay({
+//     key_id: process.env.RAZORPAY_KEY_ID,
+//     key_secret: process.env.RAZORPAY_KEY_SECRET,
+//   });
 
-    res.json({ message: "Booking cancelled", booking });
-  } catch (err) {
-    console.error("Cancel booking failed:", err.message);
-    res.status(500).json({ message: "Failed to cancel booking" });
-  }
-};
+//   try {
+//     const booking = await Booking.findById(bookingId);
+//     if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+//     // Check if booking is already cancelled
+//     if (booking.status === "cancelled") {
+//       return res.status(400).json({ message: "Booking is already cancelled" });
+//     }
+
+//     // If booking is paid, trigger refund
+//     if (booking.status === "paid" && booking.razorpay_payment_id) {
+//       try {
+//         // Refund full amount
+//         const refund = await razorpay.payments.refund(booking.razorpay_payment_id, {
+//           notes: { reason: "User cancelled booking" },
+//         });
+
+//         booking.refundStatus = "processed"; // track refund status
+//         console.log("Refund successful:", refund);
+//       } catch (refundErr) {
+//         console.error("Refund failed:", refundErr);
+//         return res.status(500).json({
+//           message: "Booking cancellation failed. Refund could not be processed.",
+//         });
+//       }
+//     }
+
+//     // Update booking status to cancelled
+//     booking.status = "cancelled";
+//     await booking.save();
+
+//     res.json({ message: "Booking cancelled successfully", booking });
+//   } catch (err) {
+//     console.error("Cancel booking failed:", err.message);
+//     res.status(500).json({ message: "Failed to cancel booking" });
+//   }
+// };
+
+// export const cancelBooking = async (req, res) => {
+//   const bookingId = req.params.id;
+
+//   try {
+//     const booking = await Booking.findById(bookingId);
+//     if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+//     booking.status = "cancelled";
+//     await booking.save();
+
+//     res.json({ message: "Booking cancelled", booking });
+//   } catch (err) {
+//     console.error("Cancel booking failed:", err.message);
+//     res.status(500).json({ message: "Failed to cancel booking" });
+//   }
+// };
 
 export const getAllBookings = async (req, res) => {
   try {
@@ -127,3 +198,138 @@ export const getAllBookings = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch all bookings" });
   }
 };
+
+
+
+export const cancelBooking = async (req, res) => {
+  const bookingIds = req.params.id.split(","); // can cancel multiple
+
+  const razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
+  });
+
+  try {
+    const bookings = await Booking.find({ _id: { $in: bookingIds } }).populate("venueId userId");
+
+    if (!bookings || bookings.length === 0) {
+      return res.status(404).json({ message: "Booking(s) not found" });
+    }
+
+    let totalAmount = 0;
+    let startTimes = [];
+    let endTimes = [];
+
+    for (let booking of bookings) {
+      if (booking.status === "cancelled") continue;
+
+      // ✅ Refund only if paid
+      if (booking.status === "paid" && booking.razorpay_payment_id) {
+        try {
+          await razorpay.payments.refund(booking.razorpay_payment_id, {
+            amount: booking.price * 100, // refund exact amount in paise
+            notes: { reason: "User cancelled booking" },
+          });
+          booking.refundStatus = "processed";
+        } catch (refundErr) {
+          console.error("Refund failed:", refundErr.error || refundErr);
+          return res.status(500).json({
+            message: "Booking cancellation failed. Refund could not be processed.",
+            error: refundErr.error || refundErr.message,
+          });
+        }
+      }
+
+      booking.status = "cancelled";
+      await booking.save();
+
+      totalAmount += booking.price || 0;
+      startTimes.push(booking.startTime);
+      endTimes.push(booking.endTime);
+    }
+
+    // SMS part
+    const earliestStart = startTimes.sort()[0];
+    const latestEnd = endTimes.sort()[endTimes.length - 1];
+    const dateObj = new Date(bookings[0].date);
+    const formattedDate = dateObj.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+    const phone = bookings[0]?.userId?.mobile;
+    if (phone) {
+      const smsData = {
+        venue: bookings[0].venueId.name,
+        date: formattedDate,
+        time: earliestStart,
+        time1: latestEnd,
+        amount: totalAmount,
+      };
+      await sendBookingCancelledSMS(phone, smsData);
+    }
+
+    res.json({ message: "Booking(s) cancelled successfully", bookings });
+  } catch (err) {
+    console.error("Cancel booking failed:", err.message);
+    res.status(500).json({ message: "Failed to cancel booking", error: err.message });
+  }
+};
+
+
+// export const cancelBooking = async (req, res) => {
+//   const bookingId = req.params.id;
+
+//   const razorpay = new Razorpay({
+//     key_id: process.env.RAZORPAY_KEY_ID,
+//     key_secret: process.env.RAZORPAY_KEY_SECRET,
+//   });
+
+//   try {
+//     const booking = await Booking.findById(bookingId).populate("venueId userId");
+//     if (!booking) return res.status(404).json({ message: "Booking not found" });
+
+//     if (booking.status === "cancelled") {
+//       return res.status(400).json({ message: "Booking is already cancelled" });
+//     }
+
+//     // Refund if already paid
+//     if (booking.status === "paid" && booking.razorpay_payment_id) {
+//       try {
+//         const refund = await razorpay.payments.refund(booking.razorpay_payment_id, {
+//           notes: { reason: "User cancelled booking" },
+//         });
+//         booking.refundStatus = "processed";
+//         console.log("Refund successful:", refund);
+//       } catch (refundErr) {
+//         console.error("Refund failed:", refundErr);
+//         return res.status(500).json({
+//           message: "Booking cancellation failed. Refund could not be processed.",
+//         });
+//       }
+//     }
+
+//     // Cancel booking
+//     booking.status = "cancelled";
+//     await booking.save();
+
+//     // ✅ Send cancellation SMS
+//     const phone = booking?.userId?.mobile;
+//     if (phone) {
+//       const smsData = {
+//         venue: booking.venueId.name,
+//         date: booking.date,
+//         time: booking.startTime,
+//       };
+//       await sendBookingCancelledSMS(phone, smsData);
+//     } else {
+//       console.warn("⚠️ No mobile number found for user");
+//     }
+
+//     res.json({ message: "Booking cancelled successfully", booking });
+//   } catch (err) {
+//     console.error("Cancel booking failed:", err.message);
+//     res.status(500).json({ message: "Failed to cancel booking" });
+//   }
+// };
