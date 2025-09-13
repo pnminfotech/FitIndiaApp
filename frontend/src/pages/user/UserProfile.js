@@ -200,11 +200,11 @@ const UserProfile = () => {
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Mobile</label>
                   <input
                     type="tel"
-                    maxLength="10"
+                    maxLength="12"
                     pattern="[0-9]{10}"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}
-                    placeholder="10-digit Mobile Number"
+                    placeholder="12-digit Mobile Number"
                     className="w-full p-3 border border-gray-300 rounded-xl"
                   />
                 </div>

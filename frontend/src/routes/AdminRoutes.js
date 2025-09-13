@@ -19,12 +19,14 @@ export default function AdminRoutes() {
 
   return (
     <Routes>
-      {/* ✅ Public Admin Login Route */}
-      <Route path="/" element={<AdminLogin />} />
+      {/* ✅ Public Login */}
+      <Route path="login" element={<AdminLogin />} />
 
       {/* ✅ Protected Admin Routes */}
       {isAuthenticated ? (
         <>
+          {/* If hitting /admin directly → redirect to dashboard */}
+          <Route path="/" element={<Navigate to="dashboard" />} />
           <Route element={<AdminLayout />}>
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="venues" element={<VenueList />} />
@@ -38,10 +40,10 @@ export default function AdminRoutes() {
           <Route path="slots" element={<ManageSlots />} />
         </>
       ) : (
-        // 🚫 Redirect if not authenticated and trying to access anything except /
+        // 🚫 If not authenticated → redirect to login
         <Route
           path="*"
-          element={<Navigate to="/admin" state={{ from: location }} />}
+          element={<Navigate to="/admin/login" state={{ from: location }} />}
         />
       )}
     </Routes>

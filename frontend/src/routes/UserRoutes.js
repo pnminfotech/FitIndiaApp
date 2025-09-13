@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Homepage from "../pages/user/Homepage";
 import SportsVenue from "../pages/user/SportsVenue";
 import Coaching from "../pages/user/Coaching";
@@ -18,46 +18,29 @@ import UserProtectedRoute from "../components/UserProtectedRoute"; // import it
 
 export default function UserRoutes() {
   const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
   const isAuthenticated = !!token;
-  const location = useLocation();
 
   return (
     <Routes>
-      {/* Default redirect */}
+      {/* Default redirect to homepage */}
       <Route path="/" element={<Navigate to="/user/homepage" />} />
 
-      {/* ✅ Login Route */}
+      {/* Login route */}
       <Route
         path="login"
         element={
-          role === "admin" ? (
-            <Navigate to="/admin/dashboard" />
-          ) : isAuthenticated ? (
-            <Navigate to="/user/homepage" />
-          ) : (
-            <Login />
-          )
+          isAuthenticated ? <Navigate to="/user/homepage" /> : <Login />
         }
       />
 
-      {/* ✅ Public Pages */}
-      <Route
-        path="homepage"
-        element={
-          role === "admin" ? (
-            <Navigate to="/admin/dashboard" />
-          ) : (
-            <Homepage />
-          )
-        }
-      />
+      {/* Public pages */}
+      <Route path="homepage" element={<Homepage />} />
       <Route path="sportsvenue" element={<SportsVenue />} />
       <Route path="coach" element={<CoachFormPage />} />
       <Route path="rough" element={<Rought />} />
       <Route path="venue/:id" element={<VenueDetails />} />
 
-      {/* ✅ Protected Routes (Wrapped) */}
+      {/* Protected user routes */}
       <Route
         path="profile"
         element={
@@ -133,4 +116,3 @@ export default function UserRoutes() {
     </Routes>
   );
 }
- 

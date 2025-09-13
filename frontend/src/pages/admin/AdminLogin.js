@@ -16,7 +16,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://api.getfitindia.in/api/auth/login", {
+      const res = await fetch("https://api.getfitindia.in/api/auth/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

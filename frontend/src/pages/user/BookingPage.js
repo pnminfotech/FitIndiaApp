@@ -64,24 +64,25 @@ const BookingPage = () => {
 
   // Determine if a slot is available (not blocked and not booked)
   const isSlotAvailable = (slot) => {
-    const isBlocked = blockedSlots.some(
-      (b) =>
-        cleanTime(b.startTime) === cleanTime(slot.startTime) &&
-        cleanTime(b.endTime) === cleanTime(slot.endTime)
+  const isBlocked = blockedSlots.some(
+    (b) =>
+      cleanTime(b.startTime) === cleanTime(slot.startTime) &&
+      cleanTime(b.endTime) === cleanTime(slot.endTime)
+  );
+
+  const isBooked = bookings.some((b) => {
+    const bookingDate = new Date(b.date).toISOString().slice(0, 10);
+    return (
+      bookingDate === selectedDate &&
+      cleanTime(b.startTime) === cleanTime(slot.startTime) &&
+      cleanTime(b.endTime) === cleanTime(slot.endTime) &&
+      ["pending", "paid"].includes(b.status)   // ✅ block both pending & paid
     );
+  });
 
-    const isBooked = bookings.some((b) => {
-      const bookingDate = new Date(b.date).toISOString().slice(0, 10);
-      return (
-        bookingDate === selectedDate &&
-        cleanTime(b.startTime) === cleanTime(slot.startTime) &&
-        cleanTime(b.endTime) === cleanTime(slot.endTime) &&
-        b.status === "booked"
-      );
-    });
+  return !isBlocked && !isBooked;
+};
 
-    return !isBlocked && !isBooked;
-  };
 
   // Handle court selection change
   const handleCourtChange = (court) => {

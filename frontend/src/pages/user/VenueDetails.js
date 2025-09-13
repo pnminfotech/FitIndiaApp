@@ -379,27 +379,31 @@ const VenueDetails = () => {
             </section>
 
             {/* Booking Button */}
-            {/* <section className="bg-white p-6 sm:p-8 rounded-2xl  border border-gray-300 "> */}
-              {/* <h2 className="text-md sm:text-4sm md:text-sm font-extrabold leading-tight  text-black">
-                Ready to Play?
-              </h2> */}
-              <button
+          
+              {/* <button
                 onClick={() => navigate(`/user/booking/${id}`)}
                 className="w-full bg-orange-600 text-white text-sm font-bold px-8 py-4 rounded-xl hover:bg-orange-700 transition-all duration-300 shadow-sm hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300"
               >
                Select A Sport To Proceed
-              </button>
-            {/* </section> */}
+              </button> */}
+          <button
+  onClick={() => {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-            {/* Optional: Sticky Booking Button at bottom for better UX on long scrolls */}
-            {/* <div className="fixed bottom-0 left-0 right-0 bg-white shadow-xl p-4 sm:p-6 border-t border-gray-200 z-50 lg:hidden">
-              <button
-                onClick={() => navigate(`/user/booking/${id}`)}
-                className="w-full bg-blue-600 text-white text-lg font-bold px-6 py-3 rounded-full hover:bg-blue-700 transition-all duration-300 shadow-md"
-              >
-                Book Your Slot Now!
-              </button>
-            </div> */}
+    if (!token || role !== "user") {
+      // If not logged in as user, redirect to user login
+      navigate("/user/login", { state: { from: `/user/booking/${id}` } });
+    } else {
+      // If logged in as user, proceed to booking page
+      navigate(`/user/booking/${id}`);
+    }
+  }}
+  className="w-full bg-orange-600 text-white text-sm font-bold px-8 py-4 rounded-xl hover:bg-orange-700 transition-all duration-300 shadow-sm hover:shadow-xl transform hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300"
+>
+  Select A Sport To Proceed
+</button>
+
 
           </div>
         </div>

@@ -157,7 +157,7 @@ function SportsVenue() {
       </section>
 
       {/* Venue Cards */}
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[13px] sm:px-[100px] py-10">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[13px] sm:px-[100px] py-5">
         {loading ? (
   <p>Loading venues...</p>
 ) : filteredVenues.length === 0 ? (

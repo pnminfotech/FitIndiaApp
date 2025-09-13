@@ -226,8 +226,8 @@ const navigate = useNavigate();
         {/* Image */}
         <div className="flex-1">
           <img
-            src={coachingPromo}
-            alt="Pro Coaching"
+              src="https://ik.imagekit.io/kgrarhxkv/coaching.png?updatedAt=1757752927536"
+   alt="Pro Coaching"
             className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
           />
         </div>
@@ -560,7 +560,7 @@ const navigate = useNavigate();
             </Link>
             <button
               onClick={handleOpenForm}
-              className="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 border border-white/30 text-white px-10 py-4 rounded-full text-xl font-bold shadow-xl transition transform hover:scale-105 active:scale-95 ease-out-back backdrop-blur-sm group relative overflow-hidden"
+              className="inline-flex items-center justify-center bg-white/20 hover:bg-white/30 border border-white/30 text-white px-5 py-4 rounded-full text-xl font-bold shadow-xl transition transform hover:scale-105 active:scale-95 ease-out-back backdrop-blur-sm group relative overflow-hidden"
             >
               <span className="relative z-10" style={{ fontSize: 14 }}>
                 Register as Coach
@@ -573,7 +573,8 @@ const navigate = useNavigate();
       </section>
 
       {/* Coach section */}
-      <section className="w-[80%] mx-auto bg-gradient-to-br from-orange-500 to-green-300 px-4 sm:px-8 py-20 mt-20 rounded-t-[30px]  md:rounded-t-[80px] rounded-bl-[80px] shadow-3xl overflow-hidden relative z-10">
+    <section className="w-[80%] mx-auto bg-gradient-to-br from-orange-500 to-green-300 px-4 sm:px-8 py-20 mt-20 rounded-[30px] shadow-3xl overflow-hidden relative z-10">
+
         <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
           <svg className="w-full h-full" viewBox="0 0 1440 320" preserveAspectRatio="none">
             <path
@@ -611,7 +612,7 @@ const navigate = useNavigate();
 
           <div className="md:w-1/2 flex justify-center order-first md:order-last animate-fade-in-up delay-400">
             <img
-              src={coachPortrait}
+              src="https://ik.imagekit.io/kgrarhxkv/coaching.png?updatedAt=1757752927536"
               alt="Professional Sports Coach"
               className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[480px] rounded-3xl shadow-2xl object-cover object-top border-4 border-white/30 transition-transform duration-500 hover:scale-105 ease-out"
             />
@@ -620,12 +621,12 @@ const navigate = useNavigate();
       </section>
 
       {/* Footer */}
-     <footer className="hidden lg:block bg-gray-900 text-gray-300 mt-24 py-16 px-4 sm:px-16 relative z-0">
-   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-center sm:text-left max-w-7xl mx-auto">
+   <footer className="bg-gray-900 text-gray-300 mt-24 py-16 px-4 sm:px-16 relative z-0">
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 text-center sm:text-left max-w-7xl mx-auto">
           {/* About */}
           <div>
-            <h3 className="text-xl font-bold text-orange-500 mb-5">About Get Fit India</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <h3 className="text-xl font-bold text-orange-500 mb-5 text-left">About Get Fit India</h3>
+            <p className="text-gray-400 text-sm leading-relaxed text-left">
               Get Fit India is dedicated to building a vibrant sports community by connecting
               enthusiasts with premier venues and expert coaches. We make it easy to book, play, and
               stay active, fostering a healthier, fitter India.
@@ -634,8 +635,8 @@ const navigate = useNavigate();
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-bold text-orange-500 mb-5">Quick Links</h3>
-            <ul className="space-y-3 text-gray-400 text-sm">
+            <h3 className="text-xl font-bold text-orange-500 mb-5 text-left">Quick Links</h3>
+            <ul className="space-y-3 text-gray-400 text-sm text-left">
               <li>
                 <Link
                   to="/user/sportsvenue"
@@ -666,38 +667,46 @@ const navigate = useNavigate();
 
           {/* Support */}
           <div>
-            <h3 className="text-xl font-bold text-orange-500 mb-5">Support</h3>
-            <ul className="space-y-3 text-gray-400 text-sm">
-              <li>
+            <h3 className="text-xl font-bold text-orange-500 mb-5 text-left">Support</h3>
+            <ul className="space-y-3 text-gray-400 text-sm text-left">
+              {/* <li>
                 <a href="#" className="hover:text-orange-500 transition-colors duration-200">
                   FAQ
                 </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-orange-500 transition-colors duration-200">
-                  Terms of Service
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-orange-500 transition-colors duration-200">
-                  Privacy Policy
-                </a>
-              </li>
+              </li> */}
+              {/* Support */}
+  <li>
+      <Link
+        to="/terms-and-conditions"
+        className="hover:text-orange-500 transition-colors duration-200"
+      >
+        Terms of Service
+      </Link>
+    </li>
+    <li>
+    <Link
+        to="/privacypolicy"
+        className="hover:text-orange-500 transition-colors duration-200"
+      >   Privacy Policy
+      </Link>
+    </li>
+ 
+
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h3 className="text-xl font-bold text-orange-500 mb-5">Connect With Us</h3>
-            <div className="flex items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm mb-2">
+            <h3 className="text-xl font-bold text-orange-500 mb-5 text-left">Connect With Us</h3>
+            <div className="flex  justify-flexstart sm:justify-start gap-3 text-gray-400 text-sm mb-2 text-left">
               <FiPhone className="text-orange-500 text-lg" />
               <span>+91 98765 43210</span>
             </div>
-            <div className="flex items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm mb-2">
+            <div className="flex  justify-flexstart sm:justify-start gap-3 text-gray-400 text-sm mb-2">
               <FiMail className="text-orange-500 text-lg" />
               <span>ashvamedhsports@gmail.com</span>
             </div>
-            <div className="flex items-center justify-center sm:justify-start gap-3 text-gray-400 text-sm">
+            <div className="flex  justify-flexstart sm:justify-start gap-3 text-gray-400 text-sm">
               <FiMapPin className="text-orange-500 text-lg" />
               <span>Pune, Maharashtra, India</span>
             </div>
@@ -705,7 +714,7 @@ const navigate = useNavigate();
         </div>
 
         <div className="mt-16 border-t border-gray-700 pt-10 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Get Fit India. All rights reserved.
+          <p>Get Fit India is the product made by Ashvamedh Sports</p> © {new Date().getFullYear()} Get Fit India. All rights reserved.
           <p className="mt-2 text-xs text-gray-600">Built with Passion in India.</p>
         </div>
       </footer>
