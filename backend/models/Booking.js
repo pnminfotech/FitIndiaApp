@@ -52,24 +52,63 @@
 
 
 
-import mongoose from 'mongoose';
+// import mongoose from 'mongoose';
 
-const bookingSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  venueId: { type: mongoose.Schema.Types.ObjectId, ref: 'VenueModel', required: true },
-  courtId: { type: String, required: true },
-  courtName: { type: String },
-  date: { type: Date, required: true },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  price: { type: Number, required: true },   // ✅ Add this
-  status: {
-    type: String,
-    enum: ["pending", "paid", "cancelled", "completed"], // use "pending" for unpaid bookings
-    default: "pending",
+// const bookingSchema = new mongoose.Schema({
+//   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+//   venueId: { type: mongoose.Schema.Types.ObjectId, ref: 'VenueModel', required: true },
+//   courtId: { type: String, required: true },
+//   courtName: { type: String },
+//   date: { type: Date, required: true },
+//   startTime: { type: String, required: true },
+//   endTime: { type: String, required: true },
+//   price: { type: Number, required: true },   // ✅ Add this
+//   status: {
+//     type: String,
+//     enum: ["pending", "paid", "cancelled", "completed"], // use "pending" for unpaid bookings
+//     default: "pending",
+//   },
+//   // expires after 15 mins
+//   // createdAt: { type: Date, default: Date.now, expires: 900 }, 
+//   createdAt: { type: Date, default: Date.now },
+//   // pendingAt: { type: Date, default: Date.now, expires: 900 },
+//   razorpay_payment_id: { type: String },
+//   refundStatus: { type: String, enum: ["pending", "processed"], default: "pending" },
+// }, { timestamps: true });
+
+// export default mongoose.model('Booking', bookingSchema);
+
+
+
+import mongoose from "mongoose";
+
+const bookingSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    venueId: { type: mongoose.Schema.Types.ObjectId, ref: "VenueModel", required: true },
+    courtId: { type: String, required: true },
+    courtName: { type: String },
+    date: { type: Date, required: true },
+    startTime: { type: String, required: true },
+    endTime: { type: String, required: true },
+    price: { type: Number, required: true },
+
+    status: {
+      type: String,
+      enum: ["pending", "paid", "cancelled", "completed"],
+      default: "pending",
+    },
+
+    razorpay_payment_id: { type: String },
+    refundStatus: {
+      type: String,
+      enum: ["pending", "processed"],
+      default: "pending",
+    },
   },
-  razorpay_payment_id: { type: String },
-  refundStatus: { type: String, enum: ["pending", "processed"], default: "pending" },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-export default mongoose.model('Booking', bookingSchema);
+// ✅ No TTL index (MongoDB won't auto-delete now)
+
+export default mongoose.model("Booking", bookingSchema);

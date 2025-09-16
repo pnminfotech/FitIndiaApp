@@ -36,18 +36,24 @@
 //     return null;
 //   }
 // };
+
+
 import fetch from "node-fetch";
 import dotenv from "dotenv";
+import moment from "moment";   // ⬅️ add this
 dotenv.config();
 
-// ✅ Clean and normalize phone numbers
 const formatMobile = (phone) => {
-  if (!phone) return null; // avoid crash if missing
-  let clean = phone.replace(/\D/g, ""); // remove all non-digits
-  if (clean.startsWith("91")) {
-    return clean; // already has country code
-  }
-  return `91${clean}`; // add if missing
+  if (!phone) return null;
+  let clean = phone.replace(/\D/g, "");
+  if (clean.startsWith("91")) return clean;
+  return `91${clean}`;
+};
+
+// Helper to format time into AM/PM
+const formatTime = (time) => {
+  if (!time) return "";
+  return moment(time, ["HH:mm", "h:mm"]).format("h:mm A"); 
 };
 
 // ✅ Booking Confirmation SMS
@@ -56,6 +62,10 @@ export const sendBookingConfirmationSMS = async (phone, smsData) => {
     const mobile = formatMobile(phone);
     if (!mobile) throw new Error("Invalid phone number");
 
+    // Format slot times before sending
+    const time = formatTime(smsData.time);
+    const time2 = formatTime(smsData.time2);
+
     const response = await fetch("https://control.msg91.com/api/v5/flow/", {
       method: "POST",
       headers: {
@@ -63,13 +73,13 @@ export const sendBookingConfirmationSMS = async (phone, smsData) => {
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        flow_id: process.env.MSG91_TEMPLATE_ID,   // ⚠️ Confirmation template ID
+        flow_id: process.env.MSG91_TEMPLATE_ID,
         sender: process.env.MSG91_SENDER_ID,
         mobiles: mobile,
         venue: smsData.venue,
-        date: smsData.date,
-        time: smsData.time,
-        time2: smsData.time2,
+        date: moment(smsData.date).format("DD MMM YYYY"),
+        time,
+        time2,
         amount: smsData.amount,
       }),
     });
@@ -89,23 +99,25 @@ export const sendBookingCancelledSMS = async (phone, smsData) => {
     const mobile = formatMobile(phone);
     if (!mobile) throw new Error("Invalid phone number");
 
+    const time = formatTime(smsData.time);
+    const time1 = formatTime(smsData.time1);
+
     const response = await fetch("https://control.msg91.com/api/v5/flow/", {
       method: "POST",
       headers: {
         authkey: process.env.MSG91_AUTH_KEY,
         "content-type": "application/json",
       },
-     body: JSON.stringify({
-  flow_id: process.env.MSG91_CANCEL_TEMPLATE_ID,
-  sender: process.env.MSG91_SENDER_ID,
-  mobiles: mobile,
-  venue: smsData.venue,
-  date: smsData.date,
-  time: smsData.time,
-  time1: smsData.time1,   // ✅ fixed
-  amount: smsData.amount,
-}),
-
+      body: JSON.stringify({
+        flow_id: process.env.MSG91_CANCEL_TEMPLATE_ID,
+        sender: process.env.MSG91_SENDER_ID,
+        mobiles: mobile,
+        venue: smsData.venue,
+        date: moment(smsData.date).format("DD MMM YYYY"),
+        time,
+        time1,
+        amount: smsData.amount,
+      }),
     });
 
     const result = await response.json();

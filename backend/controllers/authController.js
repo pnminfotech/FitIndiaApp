@@ -90,6 +90,29 @@ export const requestOtp = async (req, res) => {
   }
 };
 // ------------------ User OTP Verify ------------------
+// export const verifyOtp = async (req, res) => {
+//   const { mobile, otp } = req.body;
+//   if (!mobile || !otp)
+//     return res.status(400).json({ error: "Mobile and OTP are required" });
+
+//   const user = await User.findOne({ mobile, role: "user" });
+//   if (!user) return res.status(400).json({ error: "User not found" });
+
+//   if (!user.otp || !user.otpExpires || user.otpExpires < Date.now())
+//     return res.status(400).json({ error: "OTP expired or not requested" });
+
+//   if (user.otp.toString() !== otp.toString())
+//     return res.status(400).json({ error: "Invalid OTP" });
+
+//   // Clear OTP
+//   user.otp = null;
+//   user.otpExpires = null;
+//   await user.save();
+
+//   const token = generateToken(user._id);
+//   res.json({ token, user });
+// };
+
 export const verifyOtp = async (req, res) => {
   const { mobile, otp } = req.body;
   if (!mobile || !otp)
@@ -98,13 +121,19 @@ export const verifyOtp = async (req, res) => {
   const user = await User.findOne({ mobile, role: "user" });
   if (!user) return res.status(400).json({ error: "User not found" });
 
+  if (user.blocked) {
+    return res
+      .status(403)
+      .json({ error: "Your account has been blocked by the admin." });
+  }
+
   if (!user.otp || !user.otpExpires || user.otpExpires < Date.now())
     return res.status(400).json({ error: "OTP expired or not requested" });
 
   if (user.otp.toString() !== otp.toString())
     return res.status(400).json({ error: "Invalid OTP" });
 
-  // Clear OTP
+  // ✅ Clear OTP
   user.otp = null;
   user.otpExpires = null;
   await user.save();
@@ -112,7 +141,6 @@ export const verifyOtp = async (req, res) => {
   const token = generateToken(user._id);
   res.json({ token, user });
 };
-
 
 
 
