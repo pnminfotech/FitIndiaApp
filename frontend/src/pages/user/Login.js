@@ -44,7 +44,7 @@ const Login = () => {
         if (res.ok) {
           localStorage.setItem("token", data.token);
           localStorage.setItem("role", data.user.role);
-          navigate("/user/homepage");
+          navigate("/user/sportsvenue");
         } else {
           alert(data.error || "Invalid OTP");
         }

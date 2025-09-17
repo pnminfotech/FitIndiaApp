@@ -363,12 +363,13 @@ const handleUnblockFullMonth = async () => {
 
 
 
-        <div className="bg-white shadow p-4 rounded-lg mt-6 border border-red-200">
+       <div className="bg-white shadow p-4 rounded-lg mt-6 border border-red-200">
   <h3 className="text-lg font-bold text-red-700 mb-2">🗓️ Unblock Full Month</h3>
 
-  <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+  <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-end gap-3">
+    {/* Venue select */}
     <select
-      className="p-2 border rounded"
+      className="p-2 border rounded flex-1 min-w-[150px]"
       value={selectedVenue}
       onChange={(e) => setSelectedVenue(e.target.value)}
     >
@@ -378,9 +379,10 @@ const handleUnblockFullMonth = async () => {
       ))}
     </select>
 
+    {/* Court select */}
     {courts.length > 0 && (
       <select
-        className="p-2 border rounded"
+        className="p-2 border rounded flex-1 min-w-[150px]"
         value={selectedCourt?._id || ""}
         onChange={(e) =>
           setSelectedCourt(courts.find((c) => c._id === e.target.value))
@@ -395,22 +397,25 @@ const handleUnblockFullMonth = async () => {
       </select>
     )}
 
+    {/* Month input */}
     <input
       type="month"
-      className="p-2 border rounded"
+      className="p-2 border rounded flex-1 min-w-[150px]"
       value={selectedMonth}
       onChange={(e) => setSelectedMonth(e.target.value)}
     />
 
+    {/* Unblock button */}
     <button
       onClick={handleUnblockFullMonth}
-      className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 flex-shrink-0"
       disabled={!selectedVenue || !selectedCourt || !selectedMonth}
     >
       🔓 Unblock Full Month
     </button>
   </div>
 </div>
+
 
       </div>
     </div>

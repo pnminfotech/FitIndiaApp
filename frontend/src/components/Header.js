@@ -24,10 +24,10 @@ function Header({ selectedCity, onSelectCity, uniqueCities, onToggleSidebar }) {
       </div>
 
       {/* Right icons */}
-      <div className="flex items-center gap-4 lg:mr-[42px]">
+      <div className="flex items-center gap-5 lg:mr-[42px]">
         {/* <FiSearch className="text-[20px] font-bold text-orange-500 cursor-pointer" /> */}
         <FaUser
-          className="text-[20px] font-bold text-orange-500 cursor-pointer"
+          className="text-[20px] font-bold text-orange-500 cursor-pointer me-2"
           onClick={onToggleSidebar}
         />
       </div>

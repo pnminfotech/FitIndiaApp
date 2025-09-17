@@ -417,65 +417,67 @@ const toggleSlotSelection = (slot) => {
           </h2>
           {/* Changed grid-cols-2 to grid-cols-1 for small screens */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 max-h-[400px] overflow-y-auto pr-2 pb-32 custom-scrollbar">
-   {allSlots.filter(isSlotAvailable).length > 0 ? (
-              allSlots.filter(isSlotAvailable).map((slot, index) => {
-                const isSelected = selectedSlots.some(
-  (s) =>
-    s.startTime === slot.startTime &&
-    s.endTime === slot.endTime
-);
+  {allSlots
+  .filter(isSlotAvailable)
+  .filter((slot) => {
+    if (selectedDate === today) {
+      const now = moment(); // current time
+      const slotEnd = moment(slot.endTime, "HH:mm");
+      return slotEnd.isAfter(now); // keep only future slots
+    }
+    return true; // for future dates, keep all slots
+  })
+  // ✅ Sort slots by start time
+  .sort((a, b) => moment(a.startTime, "HH:mm").diff(moment(b.startTime, "HH:mm")))
+  .map((slot, index) => {
+    const isSelected = selectedSlots.some(
+      (s) =>
+        s.startTime === slot.startTime &&
+        s.endTime === slot.endTime
+    );
+
+    return (
+      <button
+        key={index}
+        onClick={() => toggleSlotSelection(slot)}
+        className={`w-full rounded-xl border flex items-center justify-between ml-1 p-4 transition-all duration-200 ease-in-out
+          ${
+            isSelected
+              ? "bg-green-50 text-black border-green-700 shadow-md scale-[1.01]"
+              : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:shadow-sm"
+          }`}
+      >
+        {/* Left: Time and Price */}
+        <div className="flex flex-col items-start">
+          <div className="flex flex">
+            <div className="font-medium text-sm sm:text-base mx-1">
+              {moment(slot.startTime, "HH:mm").format("h:mm A")} -{" "}
+              {moment(slot.endTime, "HH:mm").format("h:mm A")}
+            </div>
+            <div className="text-xs sm:text-sm font-bold text-gray-700 mx-1">
+              ₹{slot.price || 0}
+            </div>
+          </div>
+          <div className="text-[11px] mt-1 text-gray-500">
+            {isSelected ? "Selected" : "Available"}
+          </div>
+        </div>
+
+        {/* Right: + or - Icon */}
+        <div
+          className={`text-xl font-bold ${
+            isSelected
+              ? "text-red-600 border border-red-600"
+              : "text-green-600 bg-green-100"
+          } rounded-full w-5 h-5 flex items-center justify-center`}
+        >
+          {isSelected ? "-" : "+"}
+        </div>
+      </button>
+    );
+  })}
 
 
-                return (
-              <button
-  key={index}
-  onClick={() => toggleSlotSelection(slot)}
-  className={`w-full rounded-xl border flex items-center justify-between ml-1 p-4 transition-all duration-200 ease-in-out
-    ${
-      isSelected
-        ? "bg-green-50 text-black border-green-700 shadow-md scale-[1.01]"
-        : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:shadow-sm"
-    }`}
->
-  {/* Left: Time and Price */}
-  <div className="flex flex-col items-start">
-   <div className="flex flex">
-
-<div className="font-medium text-sm sm:text-base mx-1">
-      {moment(slot.startTime, "HH:mm").format("h:mm A")} -{" "}
-      {moment(slot.endTime, "HH:mm").format("h:mm A")}
-    </div>
-
-    <div className="text-xs sm:text-sm font-bold text-gray-700  mx-1 ">
-      ₹{slot.price || 0}
-    </div>
-
-   </div>
-    
-    <div className="text-[11px] mt-1 text-gray-500">
-      {isSelected ? "Selected" : "Available"}
-    </div>
-  </div>
-
-  {/* Right: + or - Icon */}
-  <div
-    className={`text-xl font-bold ${
-      isSelected ? "text-red-600 border border-red-600 " : "text-green-600 bg-green-100"
-    } rounded-full w-5 h-5 flex items-center justify-center`}
-  >
-    {isSelected ? "-" : "+"}
-  </div>
-</button>
-
-
-                );
-              })
-            ) : (
-              <p className="text-red-500 col-span-full text-center py-4 text-sm">
-                {/* <Target size={30} className="inline-block mr-2 text-red-400" /> */}
-                No slots available for this date and court.
-              </p>
-            )}
           </div>
         </div>
       )}

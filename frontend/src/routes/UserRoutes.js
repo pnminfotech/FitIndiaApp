@@ -29,7 +29,7 @@ export default function UserRoutes() {
       <Route
         path="login"
         element={
-          isAuthenticated ? <Navigate to="/user/homepage" /> : <Login />
+          isAuthenticated ? <Navigate to="/user/sportsvenue" /> : <Login />
         }
       />
 

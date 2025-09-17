@@ -58,7 +58,7 @@ const formatTime = (timeStr) => {
   return `${formattedHour}:${minute.toString().padStart(2, "0")} ${ampm}`;
 };
 
-  const generateSlots = (period) => {
+ const generateSlots = (period) => {
   let start, end;
   if (period === "morning") {
     start = "05:00";
@@ -97,7 +97,18 @@ const formatTime = (timeStr) => {
     });
   }
 
-  setSlots(generated); // ✅ Replaces existing slots
+  // ✅ Append new slots, but avoid duplicates
+  setSlots((prev) => {
+    const combined = [...prev, ...generated];
+    const unique = combined.filter(
+      (slot, index, self) =>
+        index ===
+        self.findIndex(
+          (s) => s.startTime === slot.startTime && s.endTime === slot.endTime
+        )
+    );
+    return unique;
+  });
 };
 
 
