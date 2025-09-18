@@ -118,8 +118,8 @@ function SportsVenue() {
 
       {/* Filters Section */}
       <section
-        className="pt-5 lg:pt-10 px-[1px] sm:px-[70px]"
-        style={{ marginLeft: 2, marginRight: 2 }}
+        className="pt-5 lg:pt-10 px-[1px] sm:px-[70px] mx-3"
+       
       >
         <div className="flex justify-between items-center">
           <h1 className="text-xs font-bold">

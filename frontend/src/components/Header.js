@@ -12,7 +12,8 @@ function Header({ selectedCity, onSelectCity, uniqueCities, onToggleSidebar }) {
       {/* Left box with logo and city dropdown */}
       <div className="flex items-center gap-4 lg:ml-[42px]">
         <img
-          src={logo3}
+          src="https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/logo3.jpeg?updatedAt=1758175870307"
+             
           alt="Fit India Logo"
           className="h-[40px] w-[40px] rounded-full"
         />

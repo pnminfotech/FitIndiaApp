@@ -114,7 +114,7 @@ const navigate = useNavigate();
           {/* Logo & Title */}
           <div className="flex items-center gap-4">
             <img
-              src={logo3}
+              src="https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/logo3.jpeg?updatedAt=1758175870307"
               alt="Fit India Logo"
               className="h-[50px] w-[50px] sm:h-[60px] sm:w-[60px] rounded-full"
             />
@@ -254,7 +254,7 @@ const navigate = useNavigate();
 
         <div className="flex-1">
           <img
-            src={coachingPromo1}
+            src="https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/mobile.jpg?updatedAt=1758175870482"
             alt="Discover"
             className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
           />
@@ -282,7 +282,7 @@ const navigate = useNavigate();
 
         <div className="flex-1">
           <img
-            src={coachingPromo3}
+            src="https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/stadium.jpg?updatedAt=1758175873144"
             alt="Book Instantly"
             className="rounded-2xl shadow-lg w-full max-w-md mx-auto h-[320px] object-cover"
           />
@@ -310,23 +310,23 @@ const navigate = useNavigate();
         >
           {[
             {
-              url: carosoule2,
+              url: "https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/carosoule1.png?updatedAt=1758175861057",
               caption: "Elite Coaching Facilities",
             },
             {
-              url: carosoule3,
+              url: "https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/carosoule4.jpeg?updatedAt=1758175859015",
               caption: "Book Sports Venues Instantly",
             },
             {
-              url: carosoule4,
+              url: "https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/carosoule5.png?updatedAt=1758175860827",
               caption: "Train with Top Coaches",
             },
             {
-              url: carosoule5,
+              url: "https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/carosoule6.jpeg?updatedAt=1758175859255",
               caption: "Weekend Sports Events & Tournaments",
             },
             {
-              url: carosoule1,
+              url: "https://ik.imagekit.io/kgrarhxkv/GetFitIndia/assets/carosoule1.jpeg?updatedAt=1758175859037",
               caption: "Top Turf Grounds near you",
             },
           ].map((item, index) => (
