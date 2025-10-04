@@ -17,50 +17,64 @@ function AddVenue() {
     amenities:"",
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("name", venue.name);
-    formData.append("city", venue.city);
-    formData.append("location[address]", venue.location.address);
-    formData.append("location[lat]", venue.location.lat);
-    formData.append("location[lng]", venue.location.lng);
-    formData.append("pricing", venue.pricing);
-    formData.append("description", venue.description);
-    formData.append("image", venue.image); // must match field used in multer
-    formData.append("sports", venue.sports); // comma-separated string
-    formData.append("amenities", venue.amenities); // comma-separated string
-    try {
-      const res = await fetch("https://api.getfitindia.in/api/venues", {
-        method: "POST",
-        body: formData,
+  const formData = new FormData();
+  formData.append("name", venue.name);
+  formData.append("city", venue.city);
+  formData.append("location[address]", venue.location.address);
+  formData.append("location[lat]", venue.location.lat);
+  formData.append("location[lng]", venue.location.lng);
+  formData.append("pricing", venue.pricing);
+  formData.append("description", venue.description);
+  formData.append("image", venue.image);
+  formData.append("sports", venue.sports);
+  formData.append("amenities", venue.amenities);
+
+  try {
+    // ✅ Get token from localStorage
+    const token = localStorage.getItem("token"); 
+
+    if (!token) {
+      alert("You must be logged in!");
+      return;
+    }
+
+    const res = await fetch("https://api.getfitindia.in/api/venues", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`, // ✅ Attach token here
+      },
+      body: formData,
+    });
+
+    if (res.ok) {
+      alert("Venue Added Successfully!");
+      setVenue({
+        name: "",
+        city: "",
+        location: { address: "", lat: "", lng: "" },
+        description: "",
+        pricing: "",
+        image: null,
+        sports: "",
+        amenities: "",
       });
 
-      if (res.ok) {
-        alert("Venue Added Successfully!");
-        setVenue({
-          name: "",
-          city: "",
-          location: {
-            address: "",
-            lat: "",
-            lng: "",
-          },
-          description: "",
-          pricing: "",
-          image: null,
-          sports:"",
-          amenities:"",
-        });
-      } else {
-        alert("Failed to add venue");
+      // ✅ Reset file input manually
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-    } catch (err) {
-      alert("Error occurred");
-      console.error(err);
+    } else {
+      const errorData = await res.json();
+      alert(`Failed to add venue: ${errorData.message || "Unknown error"}`);
     }
-  };
+  } catch (err) {
+    alert("Error occurred");
+    console.error(err);
+  }
+};
 
   return (
     <div className="px-4 sm:px-6 md:px-10 py-6 mt-2">

@@ -8,27 +8,99 @@ function ManageSlots() {
   const [courtName, setCourtName] = useState("");
   const [selectedSports, setSelectedSports] = useState([]);
   const [slots, setSlots] = useState([{ startTime: "", endTime: "", price: "" }]);
-  const [defaultPrice, setDefaultPrice] = useState(""); // 🆕 Default price
+  const [defaultPrice, setDefaultPrice] = useState("");
   const [courts, setCourts] = useState([]);
   const [editCourtId, setEditCourtId] = useState(null);
 
+  // Always read token when needed (in case it changes after login)
+  const getAuthHeader = () => {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  };
+
+  // --- Helpers ---
+  const priceToNumber = (p) => (p === "" || p == null ? 0 : Number(String(p).replace(/[^\d]/g, "")));
+
+  const sanitizeSlots = (list) =>
+    list
+      .map((s) => ({
+        startTime: s.startTime?.trim() || "",
+        endTime: s.endTime?.trim() || "",
+        price: priceToNumber(s.price),
+      }))
+      .filter((s) => s.startTime && s.endTime); // keep only filled rows
+
+  const timesToMinutes = (t) => {
+    const [h, m] = (t || "00:00").split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const validateNoOverlap = (list) => {
+    const intervals = list.map((s) => ({
+      start: timesToMinutes(s.startTime),
+      end: timesToMinutes(s.endTime),
+    }));
+    // invalid durations or overlap
+    for (const it of intervals) {
+      if (isNaN(it.start) || isNaN(it.end) || it.end <= it.start) return false;
+    }
+    intervals.sort((a, b) => a.start - b.start);
+    for (let i = 1; i < intervals.length; i++) {
+      if (intervals[i].start < intervals[i - 1].end) return false;
+    }
+    return true;
+  };
+
+  const formatTime = (timeStr) => {
+    const [hour, minute] = timeStr.split(":").map(Number);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const h12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${h12}:${String(minute).padStart(2, "0")} ${ampm}`;
+  };
+
+  // --- Load venues ---
   useEffect(() => {
-    fetch("https://api.getfitindia.in/api/venues")
-      .then((res) => res.json())
-      .then((data) => setVenues(data));
+    (async () => {
+      try {
+        const res = await fetch("https://api.getfitindia.in/api/venues", {
+          headers: { ...getAuthHeader() },
+        });
+        if (!res.ok) throw new Error("Failed to load venues");
+        const data = await res.json();
+        setVenues(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error(e);
+        alert("Failed to load venues");
+      }
+    })();
   }, []);
 
+  // --- When venue changes, fetch courts + sports list from venue ---
   useEffect(() => {
-    if (selectedVenue) {
-      const venue = venues.find((v) => v._id === selectedVenue);
-      if (venue) setVenueSports(venue.sports || []);
-
-      fetch(`https://api.getfitindia.in/api/slots/${selectedVenue}/courts`)
-        .then((res) => res.json())
-        .then(setCourts);
+    if (!selectedVenue) {
+      setVenueSports([]);
+      setCourts([]);
+      return;
     }
+    const venue = venues.find((v) => v._id === selectedVenue);
+    setVenueSports(venue?.sports || []);
+
+    (async () => {
+      try {
+        const res = await fetch(`https://api.getfitindia.in/api/slots/${selectedVenue}/courts`, {
+          headers: { ...getAuthHeader() },
+        });
+        if (!res.ok) throw new Error("Failed to load courts");
+        const data = await res.json();
+        setCourts(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error(e);
+        alert("Failed to load courts");
+      }
+    })();
   }, [selectedVenue, venues]);
 
+  // --- UI handlers ---
   const handleSportToggle = (sport) => {
     setSelectedSports((prev) =>
       prev.includes(sport) ? prev.filter((s) => s !== sport) : [...prev, sport]
@@ -36,13 +108,15 @@ function ManageSlots() {
   };
 
   const handleSlotChange = (idx, field, value) => {
-    const updated = [...slots];
-    updated[idx][field] = value;
-    setSlots(updated);
+    setSlots((prev) => {
+      const next = [...prev];
+      next[idx] = { ...next[idx], [field]: value };
+      return next;
+    });
   };
 
   const addSlot = () => {
-    setSlots([...slots, { startTime: "", endTime: "", price: defaultPrice }]); // 🆕 default price
+    setSlots((prev) => [...prev, { startTime: "", endTime: "", price: defaultPrice }]);
   };
 
   const resetForm = () => {
@@ -51,74 +125,92 @@ function ManageSlots() {
     setSlots([{ startTime: "", endTime: "", price: defaultPrice }]);
     setEditCourtId(null);
   };
-const formatTime = (timeStr) => {
-  const [hour, minute] = timeStr.split(":").map(Number);
-  const ampm = hour >= 12 ? "PM" : "AM";
-  const formattedHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${formattedHour}:${minute.toString().padStart(2, "0")} ${ampm}`;
-};
 
- const generateSlots = (period) => {
-  let start, end;
-  if (period === "morning") {
-    start = "05:00";
-    end = "12:30";
-  } else if (period === "afternoon") {
-    start = "12:30";
-    end = "16:30";
-  } else if (period === "evening") {
-    start = "16:30";
-    end = "23:59";
-  }
-
-  const generated = [];
-  let [hour, minute] = start.split(":").map(Number);
-  const [endHour, endMinute] = end.split(":").map(Number);
-
-  while (hour < endHour || (hour === endHour && minute < endMinute)) {
-    const startTime = `${hour.toString().padStart(2, "0")}:${minute
-      .toString()
-      .padStart(2, "0")}`;
-
-    minute += 30;
-    if (minute >= 60) {
-      hour += 1;
-      minute -= 60;
+  const generateSlots = (period) => {
+    let start = "05:00";
+    let end = "12:30";
+    if (period === "afternoon") {
+      start = "12:30";
+      end = "16:30";
+    } else if (period === "evening") {
+      start = "16:30";
+      end = "23:59";
     }
 
-    const endTime = `${hour.toString().padStart(2, "0")}:${minute
-      .toString()
-      .padStart(2, "0")}`;
+    const generated = [];
+    let [h, m] = start.split(":").map(Number);
+    const [eh, em] = end.split(":").map(Number);
 
-    generated.push({
-      startTime,
-      endTime,
-      price: defaultPrice,
+    while (h < eh || (h === eh && m < em)) {
+      const s = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      m += 30;
+      if (m >= 60) {
+        h += 1;
+        m -= 60;
+      }
+      const e = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      generated.push({ startTime: s, endTime: e, price: defaultPrice });
+    }
+
+    setSlots((prev) => {
+      const combined = [...prev, ...generated];
+      const unique = combined.filter(
+        (slot, i, arr) =>
+          i === arr.findIndex((s) => s.startTime === slot.startTime && s.endTime === slot.endTime)
+      );
+      return unique;
     });
-  }
+  };
 
-  // ✅ Append new slots, but avoid duplicates
-  setSlots((prev) => {
-    const combined = [...prev, ...generated];
-    const unique = combined.filter(
-      (slot, index, self) =>
-        index ===
-        self.findIndex(
-          (s) => s.startTime === slot.startTime && s.endTime === slot.endTime
-        )
-    );
-    return unique;
-  });
-};
-
+  const refreshCourts = async () => {
+    if (!selectedVenue) return;
+    const res = await fetch(`https://api.getfitindia.in/api/slots/${selectedVenue}/courts`, {
+      headers: { ...getAuthHeader() },
+    });
+    if (!res.ok) throw new Error("Failed to refresh courts");
+    const data = await res.json();
+    setCourts(Array.isArray(data) ? data : []);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!selectedVenue) {
+      alert("Please select a venue.");
+      return;
+    }
+    if (!courtName.trim()) {
+      alert("Please enter a court name.");
+      return;
+    }
+    if (selectedSports.length === 0) {
+      alert("Select at least one sport.");
+      return;
+    }
+
+    // sanitize + validate
+    const normalizedSlots = sanitizeSlots(
+      slots.map((s) => ({
+        ...s,
+        // if price was left blank, fall back to defaultPrice when present
+        price: s.price === "" ? priceToNumber(defaultPrice) : priceToNumber(s.price),
+      }))
+    );
+
+    if (normalizedSlots.length === 0) {
+      alert("Add at least one valid slot.");
+      return;
+    }
+
+    if (!validateNoOverlap(normalizedSlots)) {
+      alert("Slots overlap or have invalid times. Please fix them.");
+      return;
+    }
+
     const body = {
-      courtName,
+      courtName: courtName.trim(),
       sports: selectedSports,
-      slots,
+      slots: normalizedSlots,
     };
 
     const method = editCourtId ? "PUT" : "POST";
@@ -126,40 +218,62 @@ const formatTime = (timeStr) => {
       ? `https://api.getfitindia.in/api/slots/${selectedVenue}/courts/${editCourtId}`
       : `https://api.getfitindia.in/api/slots/${selectedVenue}/courts`;
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeader(), // ensure admin auth
+        },
+        body: JSON.stringify(body),
+      });
 
-    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        // show backend validation error if any
+        throw new Error(data?.error || data?.message || "Error saving court");
+      }
+
       alert(`Court ${editCourtId ? "updated" : "added"} successfully`);
       resetForm();
-      const updated = await fetch(
-        `https://api.getfitindia.in/api/slots/${selectedVenue}/courts`
-      ).then((r) => r.json());
-      setCourts(updated);
-    } else {
-      alert("Error saving court");
+      await refreshCourts();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Network / server error while saving court");
     }
   };
 
   const handleEdit = (court) => {
-    setCourtName(court.courtName);
-    setSelectedSports(court.sports);
-    setSlots(court.slots);
+    setCourtName(court.courtName || "");
+    setSelectedSports(Array.isArray(court.sports) ? court.sports : []);
+    setSlots(
+      (court.slots || []).map((s) => ({
+        startTime: s.startTime || "",
+        endTime: s.endTime || "",
+        price: s.price ?? "",
+      }))
+    );
     setEditCourtId(court._id);
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this court?")) return;
-    const res = await fetch(
-      `https://api.getfitindia.in/api/slots/${selectedVenue}/courts/${id}`,
-      { method: "DELETE" }
-    );
-    if (res.ok) {
+    try {
+      const res = await fetch(
+        `https://api.getfitindia.in/api/slots/${selectedVenue}/courts/${id}`,
+        {
+          method: "DELETE",
+          headers: { ...getAuthHeader() },
+        }
+      );
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to delete court");
       alert("Deleted successfully");
       setCourts((prev) => prev.filter((c) => c._id !== id));
+    } catch (e) {
+      console.error(e);
+      alert(e.message || "Network error while deleting court");
     }
   };
 
@@ -245,28 +359,22 @@ const formatTime = (timeStr) => {
                 className="p-2 border rounded"
                 required
               />
-              
-             <input
-  type="text"
-  value={slot.price ? `₹ ${slot.price}` : ""}
-  onChange={(e) => {
-    const val = e.target.value.replace(/[^\d]/g, ""); // remove ₹ or letters
-    handleSlotChange(idx, "price", val);
-  }}
-  className="p-2 border rounded w-full"
-  placeholder="₹ Price"
-  required
-/>
-
+              <input
+                type="text"
+                value={slot.price ? `₹ ${slot.price}` : ""}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/[^\d]/g, "");
+                  handleSlotChange(idx, "price", val);
+                }}
+                className="p-2 border rounded w-full"
+                placeholder="₹ Price"
+                required
+              />
             </div>
           ))}
 
           <div className="flex gap-3 flex-wrap mt-3">
-            <button
-              type="button"
-              onClick={addSlot}
-              className="text-blue-600 underline"
-            >
+            <button type="button" onClick={addSlot} className="text-blue-600 underline">
               + Add Slot
             </button>
             <button
@@ -293,10 +401,7 @@ const formatTime = (timeStr) => {
           </div>
         </div>
 
-        <button
-          type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
-        >
+        <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
           {editCourtId ? "Update Court" : "Save Court"}
         </button>
       </form>
@@ -308,10 +413,7 @@ const formatTime = (timeStr) => {
         ) : (
           <ul className="space-y-4">
             {courts.map((court) => (
-              <li
-                key={court._id}
-                className="p-4 border border-gray-200 rounded-lg shadow-sm"
-              >
+              <li key={court._id} className="p-4 border border-gray-200 rounded-lg shadow-sm">
                 <div className="flex gap-2 justify-end">
                   <button
                     onClick={() => handleEdit(court)}
@@ -331,18 +433,14 @@ const formatTime = (timeStr) => {
                 <div>
                   <p className="text-lg font-semibold">{court.courtName}</p>
                   <p className="text-sm text-gray-600">
-                    Sports: {court.sports.join(", ")}
+                    Sports: {Array.isArray(court.sports) ? court.sports.join(", ") : "—"}
                   </p>
-                  <ul className="mt-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-                    {court.slots.map((slot, idx) => (
-                      <div
-                        key={idx}
-                        className="border border-cyan-900 text-black p-3 rounded-md mb-2"
-                      >
-                       <div className="font-medium">
-  {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
-</div>
-
+                  <ul className="mt-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {(court.slots || []).map((slot, idx) => (
+                      <div key={idx} className="border border-cyan-900 text-black p-3 rounded-md mb-2">
+                        <div className="font-medium">
+                          {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                        </div>
                         <div className="text-sm text-gray-600">₹ {slot.price}</div>
                       </div>
                     ))}

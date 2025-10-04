@@ -69,71 +69,78 @@ const VenueList = () => {
   };
 
   //Update VenueList
-  const submitUpdate = async () => {
-    const fd = new FormData();
+const submitUpdate = async () => {
+  const fd = new FormData();
+  fd.append("name", editForm.name);
+  fd.append("city", editForm.city);
+  fd.append("pricing", editForm.pricing);
+  fd.append("location[address]", editForm.location.address);
+  fd.append("location[lat]", editForm.location.lat);
+  fd.append("location[lng]", editForm.location.lng);
+  fd.append("sports", editForm.sports);
+  fd.append("amenities", editForm.amenities);
 
-    fd.append("name", editForm.name);
-    fd.append("city", editForm.city);
-    fd.append("pricing", editForm.pricing);
+  if (editForm.image) {
+    fd.append("image", editForm.image);
+  }
 
-    // Flatten location for FormData
-    fd.append("location[address]", editForm.location.address);
-    fd.append("location[lat]", editForm.location.lat);
-    fd.append("location[lng]", editForm.location.lng);
-    fd.append("sports", editForm.sports);
-    fd.append("amenities", editForm.amenities);
+  try {
+    const token = localStorage.getItem("token");
 
-    if (editForm.image) {
-      fd.append("image", editForm.image);
-    }
-
-    try {
-      const res = await fetch(
-        `https://api.getfitindia.in/api/venues/${editingVenue._id}`,
-        {
-          method: "PUT",
-          body: fd,
-        }
-      );
-
-      if (res.ok) {
-        alert("Data Updated Successfully");
-        fetchVenues();
-        setEditingVenue(null);
-      } else {
-        const errData = await res.json();
-        console.error("Update error:", errData);
-        alert("Failed To Update Venue");
+    const res = await fetch(
+      `https://api.getfitindia.in/api/venues/${editingVenue._id}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: fd,
       }
-    } catch (err) {
-      console.error("Submit update error:", err);
-      alert("Something went wrong during update.");
+    );
+
+    if (res.ok) {
+      alert("Data Updated Successfully");
+      fetchVenues();
+      setEditingVenue(null);
+    } else {
+      const errData = await res.json();
+      console.error("Update error:", errData);
+      alert("Failed To Update Venue");
     }
-  };
+  } catch (err) {
+    console.error("Submit update error:", err);
+    alert("Something went wrong during update.");
+  }
+};
+
 
   // Delete Venue List
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete?")) return;
+ const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete?")) return;
 
-    try {
-      const res = await fetch(`https://api.getfitindia.in/api/venues/${id}`, {
-        method: "DELETE",
-      });
+  try {
+    const token = localStorage.getItem("token");
 
-      if (res.ok) {
-        alert("Venue Deleted Successfully!");
+    const res = await fetch(`https://api.getfitindia.in/api/venues/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        // remove deleted venue from UI
-        setVenues((prev) => prev.filter((v) => v._id !== id));
-        fetchVenues();
-      } else {
-        alert("Failed to delete venue.");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("An error occurred while deleting the venue.");
+    if (res.ok) {
+      alert("Venue Deleted Successfully!");
+      setVenues((prev) => prev.filter((v) => v._id !== id));
+      fetchVenues();
+    } else {
+      alert("Failed to delete venue.");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while deleting the venue.");
+  }
+};
+
 
   return (
     <>

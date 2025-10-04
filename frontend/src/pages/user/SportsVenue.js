@@ -207,19 +207,20 @@ function SportsVenue() {
         ) : filteredVenues.length === 0 ? (
           <p>No venues found.</p>
         ) : (
-          filteredVenues.slice(0, 8).map((venue, index, arr) => (
-            <div key={index} className="w-full">
-              <SportsGardens
-                garden={{
-                  ...venue,
-                  image: `https://api.getfitindia.in/uploads/${venue.image}`,
-                }}
-              />
-              {index !== arr.length - 1 && (
-                <div className="h-[1px] bg-gray-300 my-4 w-full col-span-full" />
-              )}
-            </div>
-          ))
+          filteredVenues.map((venue, index, arr) => (
+  <div key={index} className="w-full">
+    <SportsGardens
+      garden={{
+        ...venue,
+        image: `https://api.getfitindia.in/uploads/${venue.image}`,
+      }}
+    />
+    {index !== arr.length - 1 && (
+      <div className="h-[1px] bg-gray-300 my-4 w-full col-span-full" />
+    )}
+  </div>
+))
+
         )}
       </section>
     </main>

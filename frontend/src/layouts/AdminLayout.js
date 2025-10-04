@@ -212,6 +212,13 @@ const AdminLayout = () => {
                 label="Manage Slots"
                 onClick={() => setSidebarOpen(false)}
               />
+              {/* 🔒 Locked/Blocked Users */}
+  <NavItem
+    to="/admin/blocked-users"
+    icon={<FaUsers size={30} />}
+    label="Locked Users"
+    onClick={() => setSidebarOpen(false)}
+  />
             </div>
 
             {/* ✅ Logout button at bottom */}

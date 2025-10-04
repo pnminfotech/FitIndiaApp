@@ -10,7 +10,7 @@ import BlockSlotsAdmin from '../pages/admin/BlockSlotsAdmin';
 import ManageAddBlockSlots from '../pages/admin/ManageAddBlockSlots';
 import AdminLogin from '../pages/admin/AdminLogin';
 import AllBookings from '../pages/admin/AllBookings';
-
+import BlockedUsers from '../pages/admin/BlockedUsers';
 export default function AdminRoutes() {
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
@@ -35,9 +35,11 @@ export default function AdminRoutes() {
             <Route path="bookings" element={<BookingList />} />
             <Route path="manage" element={<ManageAddBlockSlots />} />
             <Route path="allbookings" element={<AllBookings />} />
+             <Route path="blocked-users" element={<BlockedUsers />} />
           </Route>
           <Route path="blockslot" element={<BlockSlotsAdmin />} />
           <Route path="slots" element={<ManageSlots />} />
+         
         </>
       ) : (
         // 🚫 If not authenticated → redirect to login
