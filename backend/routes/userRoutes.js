@@ -29,18 +29,24 @@ import { isAdmin } from "../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 
-// ✅ Authenticated routes
-router.get("/me", authMiddleware, getMe);
-router.put("/me", authMiddleware, updateMe);
-router.post("/location", authMiddleware, updateUserLocation);
+// // ✅ Authenticated routes
+// router.get("/me", authMiddleware, getMe);
+// router.put("/me", authMiddleware, updateMe);
+// router.post("/location", authMiddleware, updateUserLocation);
 
-// ✅ Admin-only or internal listing route
-router.get("/", authMiddleware, getAllUsers);
+// // ✅ Admin-only or internal listing route
+// router.get("/", authMiddleware, getAllUsers);
 
-// ✅ Court slot availability (protected route)
-router.get("/slots/:venueId/:courtId", authMiddleware, getAvailableSlots);
+// // ✅ Court slot availability (protected route)
+// router.get("/slots/:venueId/:courtId", authMiddleware, getAvailableSlots);
 
 
-router.patch("/:id/block", authMiddleware, isAdmin, toggleBlockUser);
+// router.patch("/:id/block", authMiddleware, isAdmin, toggleBlockUser);
+
+
+// These routes are reached only after authMiddleware("admin") in index.js
+router.get("/", isAdmin, getAllUsers);
+router.patch("/:id/block", isAdmin, toggleBlockUser);
 
 export default router;
+

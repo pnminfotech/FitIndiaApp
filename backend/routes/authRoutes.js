@@ -21,7 +21,7 @@
 
 
 import express from "express";
-import { register, adminLogin, requestOtp, verifyOtp } from "../controllers/authController.js";
+import { register, adminLogin, requestOtp, verifyOtp, getLockedUsers, unlockUser, checkBlock } from "../controllers/authController.js";
 
 const router = express.Router();
 
@@ -32,6 +32,11 @@ router.post("/admin/login", adminLogin);
 // User OTP routes
 router.post("/otp/request", requestOtp);
 router.post("/otp/verify", verifyOtp);
+
+// Admin APIs
+router.get("/locked-users", getLockedUsers);
+router.put("/unlock-user/:userId", unlockUser);
+router.get("/check-block", checkBlock);
 
 export default router;
 

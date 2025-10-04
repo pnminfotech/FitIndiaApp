@@ -122,23 +122,40 @@ export const getAvailableSlots = async (req, res) => {
 
 
 // PATCH /api/users/:id/block
+// PATCH /api/users/:id/block
 export const toggleBlockUser = async (req, res) => {
   const { id } = req.params;
 
   try {
+    // Ensure only admin can block/unblock
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ error: "Only admins can block/unblock users" });
+    }
+
+    // Prevent self-blocking
+    if (req.user._id.toString() === id) {
+      return res.status(400).json({ error: "You cannot block yourself" });
+    }
+
     const user = await User.findById(id);
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // Prevent admin from blocking themselves or other admins
+    // Prevent blocking other admins
     if (user.role === "admin") {
       return res.status(403).json({ error: "Cannot block admin accounts" });
     }
 
+    // Toggle block
     user.blocked = !user.blocked;
     await user.save();
 
-    res.json({ message: `User has been ${user.blocked ? "blocked" : "unblocked"}.`, user });
+    res.json({
+      message: `User has been ${user.blocked ? "blocked" : "unblocked"}.`,
+      user: { _id: user._id, name: user.name, blocked: user.blocked }
+    });
   } catch (err) {
+    console.error("Error blocking user:", err);
     res.status(500).json({ error: "Failed to toggle user block status" });
   }
 };
+
