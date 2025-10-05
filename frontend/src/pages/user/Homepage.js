@@ -704,7 +704,7 @@ const navigate = useNavigate();
             </div>
             <div className="flex  justify-flexstart sm:justify-start gap-3 text-gray-400 text-sm mb-2">
               <FiMail className="text-orange-500 text-lg" />
-              <span>ashvamedhsports@gmail.com</span>
+              <span>getfitindia.in@gmail.com</span>
             </div>
             <div className="flex  justify-flexstart sm:justify-start gap-3 text-gray-400 text-sm">
               <FiMapPin className="text-orange-500 text-lg" />

@@ -41,39 +41,92 @@ const UserProfile = () => {
     };
     fetchUser();
   }, [token]);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const payload = {
+      name,
+      city,
+      gender,
+      dateOfBirth: dateOfBirth || null,   // send null if empty
+      sportsPreferences,
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("https://api.getfitindia.in/api/users/me", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name,
-          city,
-          gender,
-          dateOfBirth,
-          sportsPreferences,
-          mobile,
-        }),
-      });
-      if (!res.ok) throw new Error("Update failed");
+    // 1) PUT update
+    const res = await fetch("https://api.getfitindia.in/api/users/me", {
+      method: "PUT",                       // <-- IMPORTANT
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-      setShowUpdateMessage(true);
-      setTimeout(() => setShowUpdateMessage(false), 3000);
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      alert("Failed to update profile.");
+    if (!res.ok) {
+      const msg = await res.text().catch(() => "");
+      throw new Error(`Update failed: ${res.status} ${msg}`);
     }
-  };
 
-  const updateLocation = () => {
+    // 2) Re-fetch canonical user (handles null/varied update responses)
+    const meRes = await fetch("https://api.getfitindia.in/api/users/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!meRes.ok) throw new Error(`Reload failed: ${meRes.status}`);
+
+    const me = await meRes.json();
+
+    setName(me?.name || "");
+    setCity(me?.city || "");
+    setGender(me?.gender || "");
+    setMobile(me?.mobile || "");
+    setDateOfBirth(me?.dateOfBirth?.split("T")[0] || "");
+    setSportsPreferences(me?.sportsPreferences || []);
+
+    setShowUpdateMessage(true);
+    setTimeout(() => setShowUpdateMessage(false), 3000);
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    alert("Failed to update profile. " + (err?.message || ""));
+  }
+};
+
+
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const res = await fetch("https://api.getfitindia.in/api/users/me", {
+  //       method: "PUT",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         name,
+  //         city,
+  //         gender,
+  //         dateOfBirth,
+  //         sportsPreferences,
+  //         mobile,
+  //       }),
+  //     });
+  //     if (!res.ok) throw new Error("Update failed");
+
+  //     setShowUpdateMessage(true);
+  //     setTimeout(() => setShowUpdateMessage(false), 3000);
+  //   } catch (err) {
+  //     console.error("Error updating profile:", err);
+  //     alert("Failed to update profile.");
+  //   }
+  // };
+
+  useEffect(() => {
+  if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+        setCoords({ latitude, longitude });
+
         try {
           await fetch("https://api.getfitindia.in/api/users/location", {
             method: "POST",
@@ -83,15 +136,20 @@ const UserProfile = () => {
             },
             body: JSON.stringify({ latitude, longitude }),
           });
-          setCoords({ latitude, longitude });
-          alert("Location updated!");
+          console.log("User location auto-updated");
         } catch (err) {
-          console.error("Failed to update location:", err);
+          console.error("Failed to auto-update location:", err);
         }
       },
-      () => alert("Location access denied.")
+      (error) => {
+        console.warn("Location access denied or failed:", error.message);
+      }
     );
-  };
+  } else {
+    console.warn("Geolocation is not supported by this browser.");
+  }
+}, [token]);
+
 
   const getGenderImage = () => {
     if (gender === "Male") return maleImg;
@@ -161,12 +219,12 @@ const UserProfile = () => {
                   📍 Lat: {coords.latitude.toFixed(4)} | Lng: {coords.longitude.toFixed(4)}
                 </p>
               )}
-              <button
+              {/* <button
                 onClick={updateLocation}
                 className="mt-4 text-sm text-green-600 underline hover:text-green-800"
               >
                 📍 Update My Location
-              </button>
+              </button> */}
             </div>
 
             {/* Right Form Card */}
